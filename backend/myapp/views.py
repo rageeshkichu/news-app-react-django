@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import News,Advertisement
+import logging
+from .models import News, Advertisement
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from django.views.decorators.http import require_http_methods
@@ -14,112 +15,142 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
-
-
-@csrf_exempt  # Disable CSRF for this view (only for testing or APIs that don't need CSRF protection)
+from django.db import DatabaseError
+from django.core.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
+logger = logging.getLogger(__name__)
+@csrf_exempt
 def loginUser(request):
-    if request.method == 'POST':
-        # Parse the JSON request body
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for login: {request.method}')
+        return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'}, status=405)
+    try:
         data = json.loads(request.body)
-        username = data.get('username')
-        password = data.get('password')
-
-        # Authenticate user
+        username = data.get('username', '').strip()
+        password = data.get('password', '').strip()
+        if not username or not password:
+            logger.warning('Login attempt with missing credentials')
+            return JsonResponse({
+                'success': False, 
+                'message': 'Username and password are required'
+            }, status=400)
         user = authenticate(request, username=username, password=password)
-
-        # Check if user authentication was successful
         if user is not None:
-
-            # Log the user in
-            login(request, user)
-
-            # Store the user ID in the session (Django handles session automatically)
-            request.session['user_id'] = user.id
-
-            # Retrieve user ID and is_superuser status
-            user_id = user.id  # Get the user ID
-            is_superuser = user.is_superuser  # Check if user is a superuser
-
-            # Return success response along with 'is_superuser' status and 'user_id'
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+            logger.info(f'User {username} logged in successfully')
             return JsonResponse({
                 'success': True,
                 'message': 'Login successful',
-                'is_superuser': is_superuser,
-                'user_id': user_id  # Include user ID in the response
-            })
-
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+                'is_superuser': user.is_superuser,
+                'user_id': user.id,
+                'username': user.username
+            }, status=200)
         else:
-            return JsonResponse({'success': False, 'message': 'Invalid username or password'}, status=401)
-
-    return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'}, status=405)
-
-
+            logger.warning(f'Failed login attempt for username: {username}')
+            return JsonResponse({
+                'success': False, 
+                'message': 'Invalid username or password'
+            }, status=401)
+    except json.JSONDecodeError:
+        logger.error('Invalid JSON in login request')
+        return JsonResponse({
+            'success': False, 
+            'message': 'Invalid JSON format'
+        }, status=400)
+    except Exception as e:
+        logger.error(f'Login error: {str(e)}')
+        return JsonResponse({
+            'success': False, 
+            'message': 'An error occurred during login'
+        }, status=500)
 @csrf_exempt
 def add_news(request):
-    if request.method == 'POST':
-        # Extract fields from the POST request
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        content = request.POST.get('content')
-        category = request.POST.get('category', 'general')  # Default to 'general'
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for add_news: {request.method}')
+        return JsonResponse({'success': False, 'message': 'Invalid request method!'}, status=405)
+    try:
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        content = request.POST.get('content', '').strip()
+        category = request.POST.get('category', 'general').strip()
+        author_name = request.POST.get('authorName', '').strip()
+        time = request.POST.get('time', '').strip()
+        place = request.POST.get('place', '').strip()
         image = request.FILES.get('image')
-        
-        # Additional fields
-        author_name = request.POST.get('authorName')
         author_image = request.FILES.get('authorImage')
-        time = request.POST.get('time')
-        place = request.POST.get('place')
-
-        # Validate required fields
-        if not all([title, description, content, author_name, time, place]):
-            return JsonResponse({'success': False, 'message': 'Missing required fields!'}, status=400)
-
-        # Create the news instance
-        try:
-            news = News.objects.create(
-                title=title,
-                description=description,
-                content=content,
-                category=category,
-                image=image,
-                author_name=author_name,
-                author_image=author_image,
-                time=time,
-                place=place
-            )
-            return JsonResponse({'success': True, 'message': 'News added successfully!', 'news_id': news.id})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method!'}, status=400)
-
-
+        required_fields = {'title': title, 'description': description, 'content': content, 
+                          'author_name': author_name, 'time': time, 'place': place}
+        missing_fields = [field for field, value in required_fields.items() if not value]
+        if missing_fields:
+            logger.warning(f'Missing required fields: {missing_fields}')
+            return JsonResponse({
+                'success': False, 
+                'message': f'Missing required fields: {", ".join(missing_fields)}'
+            }, status=400)
+        if len(title) > 500:
+            return JsonResponse({'success': False, 'message': 'Title too long (max 500 characters)'}, status=400)
+        if len(description) > 500:
+            return JsonResponse({'success': False, 'message': 'Description too long (max 500 characters)'}, status=400)
+        news = News.objects.create(
+            title=title,
+            description=description,
+            content=content,
+            category=category,
+            image=image,
+            author_name=author_name,
+            author_image=author_image,
+            time=time,
+            place=place
+        )
+        logger.info(f'News created successfully: {news.id} - {title}')
+        return JsonResponse({
+            'success': True, 
+            'message': 'News added successfully!', 
+            'news_id': news.id
+        }, status=201)
+    except DatabaseError as e:
+        logger.error(f'Database error while adding news: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Database error occurred'}, status=500)
+    except Exception as e:
+        logger.error(f'Error adding news: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'An error occurred while adding news'}, status=500)
 @csrf_exempt
 def add_adv(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        content = request.POST.get('content')
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for add_adv: {request.method}')
+        return JsonResponse({'success': False, 'message': 'Invalid request method!'}, status=405)
+    try:
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        content = request.POST.get('content', '').strip()
         image = request.FILES.get('image')
-
-        if title and description and content:
-            news = Advertisement.objects.create(
-                title=title,
-                description=description,
-                content=content,
-                image=image,
-            )
-            return JsonResponse({'success': True, 'message': 'Advertisement added successfully!'})
-        else:
-            return JsonResponse({'success': False, 'message': 'Missing fields!'}, status=400)
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method!'}, status=400)
-
-
+        if not all([title, description, content]):
+            logger.warning('Missing required fields for advertisement')
+            return JsonResponse({'success': False, 'message': 'Title, description, and content are required!'}, status=400)
+        ad = Advertisement.objects.create(
+            title=title,
+            description=description,
+            content=content,
+            image=image,
+        )
+        logger.info(f'Advertisement created successfully: {ad.id} - {title}')
+        return JsonResponse({'success': True, 'message': 'Advertisement added successfully!'}, status=201)
+    except DatabaseError as e:
+        logger.error(f'Database error while adding advertisement: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Database error occurred'}, status=500)
+    except Exception as e:
+        logger.error(f'Error adding advertisement: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'An error occurred while adding advertisement'}, status=500)
 @csrf_exempt
 def fetch_all_news(request):
-    if request.method == 'GET':
+    if request.method != 'GET':
+        logger.warning(f'Invalid request method for fetch_all_news: {request.method}')
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    try:
         news_items = News.objects.all()
         news_list = [
             {
@@ -127,82 +158,112 @@ def fetch_all_news(request):
                 'title': news.title,
                 'description': news.description,
                 'content': news.content,
-                'category': news.category,  # Add category here
+                'category': news.category,
                 'image_url': request.build_absolute_uri(news.image.url) if news.image else None,
-                'time':news.time,
-                'place':news.place,
-                'author_name':news.author_name,
-                'date_published':news.publication_date
+                'time': news.time,
+                'place': news.place,
+                'author_name': news.author_name,
+                'date_published': news.publication_date
             }
             for news in news_items
         ]
+        logger.info(f'Fetched {len(news_list)} news items')
         return JsonResponse({'news': news_list}, status=200)
-    
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
+    except DatabaseError as e:
+        logger.error(f'Database error while fetching news: {str(e)}')
+        return JsonResponse({'error': 'Database error occurred'}, status=500)
+    except Exception as e:
+        logger.error(f'Error fetching news: {str(e)}')
+        return JsonResponse({'error': 'An error occurred while fetching news'}, status=500)
 @csrf_exempt
 def get_delete_news(request, id):
     try:
         news = News.objects.get(id=id)
     except News.DoesNotExist:
+        logger.warning(f'News item not found: {id}')
         return JsonResponse({'error': 'News item not found'}, status=404)
-
-    if request.method == 'GET':
-        return JsonResponse({
-            'id': news.id,
-            'title': news.title,
-            'description': news.description,
-            'content': news.content,
-            'category': news.category,
-            'image_url': request.build_absolute_uri(news.image.url) if news.image else None,
-            'time':news.time,
-            'place':news.place,
-            'author_name':news.author_name,
-            'author_image': request.build_absolute_uri(news.author_image.url) if news.author_image else None,
-        }, status=200)
-
-    elif request.method == 'DELETE':
-        news.delete()
-        return JsonResponse({'success': 'News deleted successfully'}, status=204)
-
-
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
+    except DatabaseError as e:
+        logger.error(f'Database error while fetching news: {str(e)}')
+        return JsonResponse({'error': 'Database error occurred'}, status=500)
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'id': news.id,
+                'title': news.title,
+                'description': news.description,
+                'content': news.content,
+                'category': news.category,
+                'image_url': request.build_absolute_uri(news.image.url) if news.image else None,
+                'time': news.time,
+                'place': news.place,
+                'author_name': news.author_name,
+                'author_image': request.build_absolute_uri(news.author_image.url) if news.author_image else None,
+            }, status=200)
+        elif request.method == 'DELETE':
+            news_id = news.id
+            news.delete()
+            logger.info(f'News deleted successfully: {news_id}')
+            return JsonResponse({'success': 'News deleted successfully'}, status=204)
+        else:
+            logger.warning(f'Invalid request method for get_delete_news: {request.method}')
+            return JsonResponse({'error': 'Invalid request method'}, status=405)
+    except Exception as e:
+        logger.error(f'Error in get_delete_news: {str(e)}')
+        return JsonResponse({'error': 'An error occurred'}, status=500)
 from django.utils import timezone
 @csrf_exempt
 def news_update(request, id):
     try:
         news = News.objects.get(id=id)
     except News.DoesNotExist:
+        logger.warning(f'News item not found for update: {id}')
         return JsonResponse({'success': False, 'message': 'News not found!'}, status=404)
-
-    # Update fields if provided in the request
-    news.title = request.POST.get('title', news.title)
-    news.description = request.POST.get('description', news.description)
-    news.content = request.POST.get('content', news.content)
-    news.category = request.POST.get('category', news.category)
-    news.time = request.POST.get('time', news.time)
-    news.place = request.POST.get('place', news.place)
-    news.author_name = request.POST.get('authorName', news.author_name)
-
-    # Handle image update
-    if 'image' in request.FILES:
-        news.image = request.FILES['image']
-
-    # Handle author image update
-    if 'author_image' in request.FILES:
-        news.author_image = request.FILES['authorImage']
-
-    news.publication_date = timezone.now()
-
-    news.save()  # Save the updated news instance
-    return JsonResponse({'success': True, 'message': 'News updated successfully!'}, status=200)
-
-@csrf_exempt  # This is necessary to allow POST requests without CSRF token (for testing purposes)
+    except DatabaseError as e:
+        logger.error(f'Database error while fetching news: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Database error occurred'}, status=500)
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for news_update: {request.method}')
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+    try:
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        content = request.POST.get('content', '').strip()
+        category = request.POST.get('category', '').strip()
+        time = request.POST.get('time', '').strip()
+        place = request.POST.get('place', '').strip()
+        author_name = request.POST.get('authorName', '').strip()
+        if title:
+            news.title = title
+        if description:
+            news.description = description
+        if content:
+            news.content = content
+        if category:
+            news.category = category
+        if time:
+            news.time = time
+        if place:
+            news.place = place
+        if author_name:
+            news.author_name = author_name
+        if 'image' in request.FILES:
+            news.image = request.FILES['image']
+        if 'authorImage' in request.FILES:
+            news.author_image = request.FILES['authorImage']
+        news.publication_date = timezone.now()
+        news.save()
+        logger.info(f'News updated successfully: {id}')
+        return JsonResponse({'success': True, 'message': 'News updated successfully!'}, status=200)
+    except DatabaseError as e:
+        logger.error(f'Database error while updating news: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Database error occurred'}, status=500)
+    except Exception as e:
+        logger.error(f'Error updating news: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'An error occurred while updating news'}, status=500)
+@csrf_exempt
 def list_ads(request):
     if request.method == 'GET':
-        ads_items = Advertisement.objects.all()  # Fetch all advertisements
+        ads_items = Advertisement.objects.all()
         ads_list = [
             {
                 'id': ad.id,
@@ -214,37 +275,30 @@ def list_ads(request):
             for ad in ads_items
         ]
         return JsonResponse({'ads': ads_list}, status=200)
-
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-    
 @csrf_exempt
 def edit_ad(request, ad_id):
-    """Fetch and edit an advertisement."""
     try:
         ad = Advertisement.objects.get(id=ad_id)
     except Advertisement.DoesNotExist:
         return JsonResponse({'error': 'Advertisement not found'}, status=404)
-
     if request.method == 'GET':
         ad_data = {
             'id': ad.id,
             'title': ad.title,
             'description': ad.description,
             'content': ad.content,
-            'image': ad.image.url if ad.image else None,  # Get image URL if available
+            'image': ad.image.url if ad.image else None,
         }
         return JsonResponse(ad_data)
-
     elif request.method == 'DELETE':
         ad.delete()
         return JsonResponse({'success': 'News deleted successfully'}, status=204)
-        
-
 @csrf_exempt
 def fetch_ad(request, id):
     if request.method == 'GET':
         try:
-            ad = Advertisement.objects.get(id=id)  # Fetch the advertisement by ID
+            ad = Advertisement.objects.get(id=id)
             ad_data = {
                 'id': ad.id,
                 'title': ad.title,
@@ -255,50 +309,35 @@ def fetch_ad(request, id):
             return JsonResponse(ad_data, status=200)
         except Advertisement.DoesNotExist:
             return JsonResponse({'error': 'Advertisement not found'}, status=404)
-
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
 @csrf_exempt
 def update_ad(request, id):
     try:
         ad = Advertisement.objects.get(id=id)
     except Advertisement.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Ad not found!'}, status=404)
-
-    # Update fields if provided in the request
     ad.title = request.POST.get('title', ad.title)
     ad.description = request.POST.get('description', ad.description)
     ad.content = request.POST.get('content', ad.content)
-
-    # Handle image update
     if 'image' in request.FILES:
         ad.image = request.FILES['image']
-
-    ad.save()  # Save the updated advertisement instance
+    ad.save()
     return JsonResponse({'success': True, 'message': 'Ad updated successfully!'}, status=200)
-
 @csrf_exempt
 @api_view(['GET'])
 def news_count(request):
     count = News.objects.count()
     return JsonResponse({'count': count})
-
 @csrf_exempt
 @api_view(['GET'])
 def ads_count(request):
     count = Advertisement.objects.count()
     return JsonResponse({'count': count})
-
-
-
 @csrf_exempt
 def get_news(request):
     try:
-        # Fetch all news
         news_queryset = News.objects.all()
         news_data = []
-
         for news in news_queryset:
             news_data.append({
                 'title': news.title,
@@ -308,23 +347,16 @@ def get_news(request):
                 'image_url': news.image_url,
                 'link': news.link,
                 'source_id': news.source_id,
-                'pubDate': news.pubDate.strftime('%Y-%m-%d %H:%M:%S'),  # Formatting the datetime field
+                'pubDate': news.pubDate.strftime('%Y-%m-%d %H:%M:%S'),
             })
-
         return JsonResponse({'results': news_data})
-
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
-
-# View to fetch all ads
 @csrf_exempt
 def get_ads(request):
     try:
-        # Fetch all ads
         ads_queryset = Advertisement.objects.all()
         ads_data = []
-
         for ad in ads_queryset:
             ads_data.append({
                 'title': ad.title,
@@ -332,21 +364,17 @@ def get_ads(request):
                 'image_url': ad.image_url,
                 'link': ad.link,
             })
-
         return JsonResponse({'results': ads_data})
-
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-    
-
 @csrf_exempt
 def news_detail(request, id):
-    news_item = get_object_or_404(News, id=id)  # Fetch the news item by id
+    news_item = get_object_or_404(News, id=id)
     news_data = {
         "id": news_item.id,
         "title": news_item.title,
         "description": news_item.description,
-        "content": news_item.content,  # Full content of the news article
+        "content": news_item.content,
         "image_url": request.build_absolute_uri(news_item.image.url) if news_item.image else None,
         "category": news_item.category,
         "date_published": news_item.publication_date,
@@ -355,12 +383,9 @@ def news_detail(request, id):
         'place':news_item.place,
     }
     return JsonResponse(news_data, status=200)
-
 @csrf_exempt
 def ad_list(request):
-    # Fetch all advertisements, ordered by publication date (newest first)
     ads = Advertisement.objects.all()
-    
     ads_data = []
     for ad in ads:
         ad_data = {
@@ -369,194 +394,308 @@ def ad_list(request):
             'description': ad.description,
             'content': ad.content,
             'publication_date': ad.publication_date.isoformat(),
-            'image_url': request.build_absolute_uri(ad.image.url) if ad.image else None,  # Handling image URL
+            'image_url': request.build_absolute_uri(ad.image.url) if ad.image else None,
         }
         ads_data.append(ad_data)
-    
     return JsonResponse({'ads': ads_data})
-
-
 @csrf_exempt
 def register_user(request):
-    if request.method == 'POST':
-        try:
-            # Parse the JSON body of the request
-            data = json.loads(request.body)
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
-            role = data.get('role', '2')  # Default role value if not provided
-
-            # Check if all required fields are present
-            if not username or not email or not password:
-                return JsonResponse({'success': False, 'message': 'All fields are required!'}, status=400)
-
-            # Check if the user already exists
-            if User.objects.filter(username=username).exists():
-                return JsonResponse({'success': False, 'message': 'Username already taken!'}, status=400)
-            if User.objects.filter(email=email).exists():
-                return JsonResponse({'success': False, 'message': 'Email already registered!'}, status=400)
-
-            # Create a new user
-            user = User.objects.create(
-                username=username,
-                email=email,
-                password=make_password(password)  # Hash the password for security
-            )
-
-            # Optionally, you can add a Profile model to store the role if needed
-            # Assuming you have a Profile model with a role field
-            # user.profile.role = role
-            # user.save()
-
-            # Return success response
-            return JsonResponse({'success': True, 'message': 'User registered successfully!'})
-
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'message': 'Invalid JSON data!'}, status=400)
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method!'}, status=405)
-
-
-
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for register_user: {request.method}')
+        return JsonResponse({'success': False, 'message': 'Invalid request method!'}, status=405)
+    try:
+        data = json.loads(request.body)
+        username = data.get('username', '').strip()
+        email = data.get('email', '').strip()
+        password = data.get('password', '').strip()
+        if not all([username, email, password]):
+            logger.warning('User registration attempt with missing fields')
+            return JsonResponse({
+                'success': False, 
+                'message': 'Username, email, and password are required!'
+            }, status=400)
+        if '@' not in email or '.' not in email:
+            logger.warning(f'Invalid email format: {email}')
+            return JsonResponse({
+                'success': False, 
+                'message': 'Invalid email format!'
+            }, status=400)
+        if len(password) < 6:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Password must be at least 6 characters long!'
+            }, status=400)
+        if User.objects.filter(username=username).exists():
+            logger.warning(f'Duplicate username attempt: {username}')
+            return JsonResponse({
+                'success': False, 
+                'message': 'Username already taken!'
+            }, status=400)
+        if User.objects.filter(email=email).exists():
+            logger.warning(f'Duplicate email attempt: {email}')
+            return JsonResponse({
+                'success': False, 
+                'message': 'Email already registered!'
+            }, status=400)
+        user = User.objects.create(
+            username=username,
+            email=email,
+            password=make_password(password)
+        )
+        logger.info(f'User registered successfully: {username}')
+        return JsonResponse({
+            'success': True, 
+            'message': 'User registered successfully!'
+        }, status=201)
+    except json.JSONDecodeError:
+        logger.error('Invalid JSON in registration request')
+        return JsonResponse({
+            'success': False, 
+            'message': 'Invalid JSON format!'
+        }, status=400)
+    except DatabaseError as e:
+        logger.error(f'Database error during registration: {str(e)}')
+        return JsonResponse({
+            'success': False, 
+            'message': 'Database error occurred'
+        }, status=500)
+    except Exception as e:
+        logger.error(f'Error registering user: {str(e)}')
+        return JsonResponse({
+            'success': False, 
+            'message': 'An error occurred during registration'
+        }, status=500)
 def get_news_by_category(request, category):
-    # Filter news by the category
-    news = News.objects.filter(category=category)
-    news_list = []
-    
-    # Serialize news data (you can customize this to match your News model)
-    for item in news:
-        news_list.append({
-            'id':item.id,
-            'title': item.title,
-            'description': item.description,
-            'content':item.content,
-            'category': item.category,
-            'date_published': item.publication_date,
-            'image_url': request.build_absolute_uri(item.image.url) if item.image else None,
-            'author_name': item.author_name,
-            'author_image': request.build_absolute_uri(item.author_image.url) if item.author_image else None,
-            'time': item.time,
-            'place': item.place
-        })
-    
-    return JsonResponse({'success': True, 'data': news_list})
-
+    try:
+        if not category or len(category) > 50:
+            logger.warning(f'Invalid category request: {category}')
+            return JsonResponse({'success': False, 'message': 'Invalid category'}, status=400)
+        news = News.objects.filter(category=category)
+        news_list = []
+        for item in news:
+            news_list.append({
+                'id': item.id,
+                'title': item.title,
+                'description': item.description,
+                'content': item.content,
+                'category': item.category,
+                'date_published': item.publication_date,
+                'image_url': request.build_absolute_uri(item.image.url) if item.image else None,
+                'author_name': item.author_name,
+                'author_image': request.build_absolute_uri(item.author_image.url) if item.author_image else None,
+                'time': item.time,
+                'place': item.place
+            })
+        logger.info(f'Fetched {len(news_list)} news items for category: {category}')
+        return JsonResponse({'success': True, 'data': news_list}, status=200)
+    except DatabaseError as e:
+        logger.error(f'Database error while fetching news by category: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Database error occurred'}, status=500)
+    except Exception as e:
+        logger.error(f'Error fetching news by category: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'An error occurred'}, status=500)
 @csrf_exempt
 def get_user_details(request, user_id):
-    if request.method == "GET":
-        try:
-            # Fetch the user by user_id
-            user = User.objects.get(id=user_id)
-
-            # Prepare the data to return
-            data = {
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "username": user.username,
-                "email": user.email,
-                "password":user.password
-            }
-            return JsonResponse({"status": "success", "data": data}, status=200)
-
-        except User.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
-
-    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
-
+    if request.method != 'GET':
+        logger.warning(f'Invalid request method for get_user_details: {request.method}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Invalid request method"
+        }, status=405)
+    try:
+        if not user_id or not str(user_id).isdigit():
+            logger.warning(f'Invalid user_id: {user_id}')
+            return JsonResponse({
+                "status": "error", 
+                "message": "Invalid user ID"
+            }, status=400)
+        user = User.objects.get(id=user_id)
+        data = {
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "email": user.email
+        }
+        logger.info(f'User details fetched: {user_id}')
+        return JsonResponse({"status": "success", "data": data}, status=200)
+    except User.DoesNotExist:
+        logger.warning(f'User not found: {user_id}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "User not found"
+        }, status=404)
+    except DatabaseError as e:
+        logger.error(f'Database error while fetching user details: {str(e)}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Database error occurred"
+        }, status=500)
+    except Exception as e:
+        logger.error(f'Error fetching user details: {str(e)}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "An error occurred"
+        }, status=500)
 @csrf_exempt
 def update_user_details(request):
-    if request.method == "POST":
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for update_user_details: {request.method}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Invalid request method"
+        }, status=405)
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        if not user_id or not str(user_id).isdigit():
+            logger.warning(f'Invalid user_id for update: {user_id}')
+            return JsonResponse({
+                "status": "error", 
+                "message": "User ID is required"
+            }, status=400)
         try:
-            # Load the JSON data from the request body
-            data = json.loads(request.body)
-            
-            # Extract the user_id from the request data
-            user_id = data.get("user_id")
-
-            if not user_id:
-                return JsonResponse({"status": "error", "message": "User ID is required"}, status=400)
-
-            # Fetch the user by user_id
-            try:
-                user = User.objects.get(id=user_id)
-            except User.DoesNotExist:
-                return JsonResponse({"status": "error", "message": "User not found"}, status=404)
-
-            # Verify if the provided email already exists (excluding the current user)
-            new_email = data.get("email", user.email)
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            logger.warning(f'User not found for update: {user_id}')
+            return JsonResponse({
+                "status": "error", 
+                "message": "User not found"
+            }, status=404)
+        new_email = data.get('email', user.email).strip()
+        if new_email != user.email:
             if User.objects.filter(email=new_email).exclude(id=user_id).exists():
-                return JsonResponse({"status": "error", "message": "Email already exists"})
-
-            # Update the user's fields with the provided data
-            user.first_name = data.get("first_name", user.first_name)
-            user.last_name = data.get("last_name", user.last_name)
-            user.username = data.get("username", user.username)
-            user.email = new_email
-
-            # Update password only if provided
-            if "password" in data and data["password"]:
-                user.set_password(data["password"])
-
-            # Save the updated user object
-            user.save()
-
-            return JsonResponse({"status": "success", "message": "User details updated successfully"}, status=200)
-
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
-
-
-@csrf_exempt  # Disable CSRF for this view (only for testing or APIs that don't need CSRF protection)
+                logger.warning(f'Email already exists: {new_email}')
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Email already exists"
+                }, status=400)
+        user.first_name = data.get('first_name', user.first_name).strip()
+        user.last_name = data.get('last_name', user.last_name).strip()
+        user.username = data.get('username', user.username).strip()
+        user.email = new_email
+        password = data.get('password', '').strip()
+        if password:
+            if len(password) < 6:
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Password must be at least 6 characters"
+                }, status=400)
+            user.set_password(password)
+        user.save()
+        logger.info(f'User details updated: {user_id}')
+        return JsonResponse({
+            "status": "success", 
+            "message": "User details updated successfully"
+        }, status=200)
+    except json.JSONDecodeError:
+        logger.error('Invalid JSON in update_user_details request')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Invalid JSON format"
+        }, status=400)
+    except DatabaseError as e:
+        logger.error(f'Database error while updating user: {str(e)}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Database error occurred"
+        }, status=500)
+    except Exception as e:
+        logger.error(f'Error updating user details: {str(e)}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "An error occurred while updating user"
+        }, status=500)
+@csrf_exempt
 def logoutUser(request):
-    if request.method == 'POST':
-        try:
-            # Log out the user and clear the session
-            logout(request)
-
-            # Optionally, you can clear the user ID from the session explicitly, 
-            # but Django will automatically handle it when `logout(request)` is called
-            request.session.flush()
-
-            return JsonResponse({'success': True, 'message': 'Logout successful'}, status=200)
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)}, status=500)
-
-    return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'}, status=405)
-
-
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for logout: {request.method}')
+        return JsonResponse({
+            'success': False, 
+            'message': 'Only POST requests are allowed'
+        }, status=405)
+    try:
+        data = json.loads(request.body)
+        refresh_token = data.get('refresh_token')
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+                logger.info('JWT token blacklisted successfully')
+            except Exception as token_error:
+                logger.warning(f'Token blacklist error: {str(token_error)}')
+        logout(request)
+        request.session.flush()
+        logger.info('User logged out successfully')
+        return JsonResponse({
+            'success': True, 
+            'message': 'Logout successful'
+        }, status=200)
+    except json.JSONDecodeError:
+        logout(request)
+        request.session.flush()
+        return JsonResponse({
+            'success': True, 
+            'message': 'Logout successful'
+        }, status=200)
+    except Exception as e:
+        logger.error(f'Logout error: {str(e)}')
+        return JsonResponse({
+            'success': False, 
+            'message': 'An error occurred during logout'
+        }, status=500)
 @csrf_exempt
 def reset_password(request):
-    if request.method == "POST":
+    if request.method != 'POST':
+        logger.warning(f'Invalid request method for reset_password: {request.method}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Invalid request method"
+        }, status=405)
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        new_password = data.get('new_password', '').strip()
+        if not user_id or not new_password:
+            logger.warning('Password reset attempt with missing fields')
+            return JsonResponse({
+                "status": "error", 
+                "message": "User ID and new password are required"
+            }, status=400)
+        if len(new_password) < 6:
+            return JsonResponse({
+                "status": "error", 
+                "message": "Password must be at least 6 characters long"
+            }, status=400)
         try:
-            # Load the JSON data from the request body
-            data = json.loads(request.body)
-
-            # Extract the user_id and new_password from the request data
-            user_id = data.get("user_id")
-            new_password = data.get("new_password")
-
-            if not user_id or not new_password:
-                return JsonResponse(
-                    {"status": "error", "message": "User ID and new password are required"},
-                    status=400
-                )
-
-            # Fetch the user by user_id
-            try:
-                user = User.objects.get(id=user_id)
-            except User.DoesNotExist:
-                return JsonResponse({"status": "error", "message": "User not found"}, status=404)
-
-            # Update the user's password
-            user.password = make_password(new_password)
-            user.save()
-            return JsonResponse({"status": "success", "message": "Password reset successfully"}, status=200)
-
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            logger.warning(f'User not found for password reset: {user_id}')
+            return JsonResponse({
+                "status": "error", 
+                "message": "User not found"
+            }, status=404)
+        user.set_password(new_password)
+        user.save()
+        logger.info(f'Password reset successfully for user: {user_id}')
+        return JsonResponse({
+            "status": "success", 
+            "message": "Password reset successfully"
+        }, status=200)
+    except json.JSONDecodeError:
+        logger.error('Invalid JSON in reset_password request')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Invalid JSON format"
+        }, status=400)
+    except DatabaseError as e:
+        logger.error(f'Database error during password reset: {str(e)}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "Database error occurred"
+        }, status=500)
+    except Exception as e:
+        logger.error(f'Error resetting password: {str(e)}')
+        return JsonResponse({
+            "status": "error", 
+            "message": "An error occurred while resetting password"
+        }, status=500)

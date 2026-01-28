@@ -4,19 +4,15 @@ import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 import UserNavbar from "../Navbar/UserNavbar";
 import Footer from "../../common/footer/Footer";
+import { clearTokens, getRefreshToken, getUserId } from '../../../utils/tokenStorage';
 
 function UserProfile() {
     const [userDetails, setUserDetails] = useState({
-        firstName: "",
-        lastName: "",
-        username: "",
-        email: "",
-        password: "",
-    });
+        firstName: "",        lastName: "",        username: "",        email: "",        password: "",    });
     const [userId, setUserId] = useState(null);
-    const [isModalOpen, setModalOpen] = useState(false); // State for modal
-    const [newPassword, setNewPassword] = useState(""); // State for new password
-    const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
+    const [isModalOpen, setModalOpen] = useState(false); 
+    const [newPassword, setNewPassword] = useState(""); 
+    const [confirmPassword, setConfirmPassword] = useState(""); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,17 +32,11 @@ function UserProfile() {
 
     const fetchUserData = async (userId) => {
         try {
-            const response = await api.get(
-                `/api/get-userprofile-details/${userId}`
+            const response = await api.get(                `/api/get-userprofile-details/${userId}`
             );
             if (response.data.status === "success") {
                 setUserDetails({
-                    firstName: response.data.data.first_name,
-                    lastName: response.data.data.last_name,
-                    username: response.data.data.username,
-                    email: response.data.data.email,
-                    password: "",
-                });
+                    firstName: response.data.data.first_name,                    lastName: response.data.data.last_name,                    username: response.data.data.username,                    email: response.data.data.email,                    password: "",                });
             } else {
                 alert("Failed to fetch user data");
             }
@@ -58,9 +48,7 @@ function UserProfile() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserDetails((prevDetails) => ({
-            ...prevDetails,
-            [name]: value,
-        }));
+            ...prevDetails,            [name]: value,        }));
     };
 
     const handleUpdate = async () => {
@@ -70,20 +58,11 @@ function UserProfile() {
         }
 
         try {
-            const response = await api.post(
-                "/api/update-user-details/",
-                {
-                    user_id: userId,
-                    first_name: userDetails.firstName,
-                    last_name: userDetails.lastName,
-                    username: userDetails.username,
-                    email: userDetails.email,
-                    password: userDetails.password,
-                },
+            const response = await api.post(                "/api/update-user-details/",                {
+                    user_id: userId,                    first_name: userDetails.firstName,                    last_name: userDetails.lastName,                    username: userDetails.username,                    email: userDetails.email,                    password: userDetails.password,                },
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                    }
+                        "Content-Type": "application/json",                    }
                 }
             );
 
@@ -111,16 +90,11 @@ function UserProfile() {
         }
 
         try {
-            const response = await api.post(
-                "/api/reset-password/",
-                {
-                    user_id: userId,
-                    new_password: newPassword,
-                },
+            const response = await api.post(                "/api/reset-password/",                {
+                    user_id: userId,                    new_password: newPassword,                },
                 {
                     headers: {
-                        "Content-Type": "application/json",
-                    }
+                        "Content-Type": "application/json",                    }
                 }
             );
 
@@ -138,114 +112,51 @@ function UserProfile() {
 
     const handleLogout = async () => {
         try {
-            await api.post("/api/logout/");
-            sessionStorage.removeItem("user_id");
+            const refreshToken = getRefreshToken();
+            
+            await api.post("/api/logout/", { refresh_token: refreshToken });
+            
+            clearTokens();
+            sessionStorage.clear();
+            
             alert("You have been logged out.");
             navigate("/login");
         } catch (error) {
             console.error("Error logging out:", error);
-            alert("Failed to log out.");
+            
+            clearTokens();
+            sessionStorage.clear();
+            navigate("/login");
         }
     };
 
-    return (
-        <>
-            <UserNavbar />
-            <div className="profile-container">
-                <h2 className="profile-header">User Profile</h2>
-                <form className="profile-form">
-                    {[
+    return (        <>            <UserNavbar />            <div className="profile-container">                <h2 className="profile-header">User Profile</h2>                <form className="profile-form">                    {[
                         { label: "Username", name: "username" },
                         { label: "Email", name: "email", type: "email" },
                     ].map(({ label, name, type = "text" }) => (
                         <div className="form-group" key={name}>
                             <label htmlFor={name} className="form-label">
                                 {label}
-                            </label>
-                            <input
-                                type={type}
-                                className="form-input"
-                                id={name}
+                            </label>                            <input                                type={type}
+                                className="form-input"                                id={name}
                                 name={name}
                                 value={userDetails[name]}
                                 onChange={handleInputChange}
-                            />
-                        </div>
-                    ))}
-                    <div className="button-group">
-                        <button
-                            type="button"
-                            className="btn btn-primary update-btn"
-                            onClick={handleUpdate}
-                        >
-                            Update
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-secondary reset-btn"
-                            onClick={() => setModalOpen(true)} // Open modal on click
-                        >
-                            Reset Password
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-danger logout-btn"
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            {/* Modal for Reset Password */}
+                            />                        </div>                    ))}
+                    <div className="button-group">                        <button                            type="button"                            className="btn btn-primary update-btn"                            onClick={handleUpdate}
+                        >                            Update                        </button>                        <button                            type="button"                            className="btn btn-secondary reset-btn"                            onClick={() => setModalOpen(true)} 
+                        >                            Reset Password                        </button>                        <button                            type="button"                            className="btn btn-danger logout-btn"                            onClick={handleLogout}
+                        >                            Logout                        </button>                    </div>                </form>            </div>            {}
             {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Reset Password</h3>
-                        <div className="form-group">
-                            <label htmlFor="new-password">New Password</label>
-                            <input
-                                type="password"
-                                id="new-password"
-                                className="form-input"
-                                value={newPassword}
+                <div className="modal-overlay">                    <div className="modal-content">                        <h3>Reset Password</h3>                        <div className="form-group">                            <label htmlFor="new-password">New Password</label>                            <input                                type="password"                                id="new-password"                                className="form-input"                                value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="Enter new password"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="confirm-password">Confirm Password</label>
-                            <input
-                                type="password"
-                                id="confirm-password"
-                                className="form-input"
-                                value={confirmPassword}
+                                placeholder="Enter new password"                            />                        </div>                        <div className="form-group">                            <label htmlFor="confirm-password">Confirm Password</label>                            <input                                type="password"                                id="confirm-password"                                className="form-input"                                value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Confirm new password"
-                            />
-                        </div>
-                        <div className="button-group">
-                            <button
-                                className="btn btn-secondary"
-                                onClick={handlePasswordReset}
-                            >
-                                Submit
-                            </button>
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => setModalOpen(false)} // Close modal on click
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                                placeholder="Confirm new password"                            />                        </div>                        <div className="button-group">                            <button                                className="btn btn-secondary"                                onClick={handlePasswordReset}
+                            >                                Submit                            </button>                            <button                                className="btn btn-secondary"                                onClick={() => setModalOpen(false)} 
+                            >                                Cancel                            </button>                        </div>                    </div>                </div>            )}
 
-            <Footer />
-        </>
-    );
+            <Footer />        </>    );
 }
 
 export default UserProfile;

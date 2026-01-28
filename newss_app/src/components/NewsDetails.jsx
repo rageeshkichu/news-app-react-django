@@ -34,71 +34,16 @@ function NewsDetails() {
     return <div>Loading...</div>;
   }
 
-  return (
-    <>
-      <UserNavbar />
-      <br />
-      <br />
-      <br />
-      <SinglePageSlider />
-      <main>
-        <div className="news-details-container">
-          <section className="news-details-mainContent details">
-            <h1 className="news-details-title">{newsDetail.title}</h1>
+  return (    <>      <UserNavbar />      <br />      <br />      <br />      <SinglePageSlider />      <main>        <div className="news-details-container">          <section className="news-details-mainContent details">            <h1 className="news-details-title">{newsDetail.title}</h1>
 
-            <div className="news-details-author">
-              <span>by</span>
-              <img
-                src={newsDetail.author_image || './default-author.jpg'}
-                alt="Author"
-              />
-              <p>{newsDetail.author_name || 'Unknown Author'}</p>
-              <label>
-                on {new Date(newsDetail.date_published).toLocaleDateString()} - {newsDetail.place}
-              </label>
-            </div>
-
-            <div className="social">
-              <div className="socBox">
-                <i className="fab fa-facebook-f"></i>
-                <span>SHARE</span>
-              </div>
-              <div className="socBox">
-                <i className="fab fa-twitter"></i>
-                <span>TWITTER</span>
-              </div>
-              <div className="socBox">
-                <i className="fab fa-pinterest"></i>
-              </div>
-              <div className="socBox">
-                <i className="fa fa-envelope"></i>
-              </div>
-            </div>
-
-            <div className="desctop">
-              <p>{newsDetail.description}</p>
-            </div>
-
-            <img
-              src={newsDetail.image_url}
+            <div className="news-details-author">              <span>by</span>              <img                src={newsDetail.author_image || './default-author.jpg'}
+                alt="Author"              />              <p>{newsDetail.author_name || 'Unknown Author'}</p>
+              <label>                on {new Date(newsDetail.date_published).toLocaleDateString()} - {newsDetail.place}
+              </label>            </div>            <div className="social">              <div className="socBox">                <i className="fab fa-facebook-f"></i>                <span>SHARE</span>              </div>              <div className="socBox">                <i className="fab fa-twitter"></i>                <span>TWITTER</span>              </div>              <div className="socBox">                <i className="fab fa-pinterest"></i>              </div>              <div className="socBox">                <i className="fa fa-envelope"></i>              </div>            </div>            <div className="desctop">              <p>{newsDetail.description}</p>
+            </div>            <img              src={newsDetail.image_url}
               alt={newsDetail.title}
-              className="news-details-image"
-            />
-
-            <div
-              className="news-details-content"
-              dangerouslySetInnerHTML={{ __html: newsDetail.content }}
-            ></div>
-          </section>
-
-          <section className="news-details-sideContent">
-            <Side />
-          </section>
-        </div>
-      </main>
-      <Footer />
-    </>
-  );
+              className="news-details-image"            />            <div              className="news-details-content"              dangerouslySetInnerHTML={{ __html: newsDetail.content }}
+            ></div>          </section>          <section className="news-details-sideContent">            <Side />          </section>        </div>      </main>      <Footer />    </>  );
 }
 
 export default NewsDetails;

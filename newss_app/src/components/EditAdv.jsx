@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/client';
 import { useParams, useNavigate } from 'react-router-dom';
-import './EditAdv.css'; // Make sure to create this CSS file
+import './EditAdv.css'; 
 import AdminNav from './AdminNav';
 import Footer from './common/footer/Footer';
 
 const EditAdv = () => {
-    const { id } = useParams(); // Get the advertisement ID from the URL
-    const navigate = useNavigate(); // Hook for navigation
+    const { id } = useParams(); 
+    const navigate = useNavigate(); 
     const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        content: '',
-        image: null,
-    });
+        title: '',        description: '',        content: '',        image: null,    });
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        // Fetch existing advertisement data by ID
+        
         const fetchAdvData = async () => {
             try {
                 const response = await api.get(`/api/adv/${id}/`);
@@ -62,8 +58,8 @@ const EditAdv = () => {
 
             if (response.data.success) {
                 setSuccessMessage('Advertisement updated successfully!');
-                // Redirect to the advertisement listing or detail page
-                navigate('/ViewAdv'); // Adjust the path as necessary
+                
+                navigate('/ViewAdv'); 
             } else {
                 setErrorMessage('Failed to update advertisement. Please try again.');
             }
@@ -73,69 +69,17 @@ const EditAdv = () => {
         }
     };
 
-    return (
-        <>
-            <AdminNav />
-            <div className="edit-adv-container">
-                <h2 className="text-center">Edit Advertisement</h2>
-                {successMessage && <div className="alert success">{successMessage}</div>}
+    return (        <>            <AdminNav />            <div className="edit-adv-container">                <h2 className="text-center">Edit Advertisement</h2>                {successMessage && <div className="alert success">{successMessage}</div>}
                 {errorMessage && <div className="alert error">{errorMessage}</div>}
                 <form onSubmit={handleSubmit} className="edit-adv-form">
-                    <div className="form-group">
-                        <label htmlFor="title">Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={formData.title}
+                    <div className="form-group">                        <label htmlFor="title">Title</label>                        <input                            type="text"                            name="title"                            value={formData.title}
                             onChange={handleChange}
-                            className="form-control"
-                            id="title"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="description">Description</label>
-                        <input
-                            type="text"
-                            name="description"
-                            value={formData.description}
+                            className="form-control"                            id="title"                            required                        />                    </div>                    <div className="form-group">                        <label htmlFor="description">Description</label>                        <input                            type="text"                            name="description"                            value={formData.description}
                             onChange={handleChange}
-                            className="form-control"
-                            id="description"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="content">Content</label>
-                        <textarea
-                            name="content"
-                            value={formData.content}
+                            className="form-control"                            id="description"                            required                        />                    </div>                    <div className="form-group">                        <label htmlFor="content">Content</label>                        <textarea                            name="content"                            value={formData.content}
                             onChange={handleChange}
-                            className="form-control"
-                            id="content"
-                            rows="6"
-                            required
-                        ></textarea>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="image">Upload Image</label>
-                        <input
-                            type="file"
-                            name="image"
-                            onChange={handleImageChange}
-                            className="form-control-file"
-                            id="image"
-                            accept="image/*"
-                        />
-                    </div>
-                    <button type="submit" className="btn-submit">
-                        Update Advertisement
-                    </button>
-                </form>
-            </div>
-            <Footer/>
-        </>
-    );
+                            className="form-control"                            id="content"                            rows="6"                            required                        ></textarea>                    </div>                    <div className="form-group">                        <label htmlFor="image">Upload Image</label>                        <input                            type="file"                            name="image"                            onChange={handleImageChange}
+                            className="form-control-file"                            id="image"                            accept="image/*"                        />                    </div>                    <button type="submit" className="btn-submit">                        Update Advertisement                    </button>                </form>            </div>            <Footer/>        </>    );
 };
 
 export default EditAdv;

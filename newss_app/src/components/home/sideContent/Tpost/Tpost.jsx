@@ -29,7 +29,7 @@ const Tpost = () => {
     fetchTechNews();
   }, []);
 
-  const userId = sessionStorage.getItem("user_id"); // Check for user_id in sessionStorage
+  const userId = sessionStorage.getItem("user_id"); 
 
   if (loading) {
     return <div className="tpost-loading">Loading...</div>;
@@ -39,32 +39,14 @@ const Tpost = () => {
     return <div className="tpost-error">{error}</div>;
   }
 
-  return (
-    <section className="tpost">
-      <Heading title="Tech" />
-      {techNews.length > 0 ? (
-        techNews.map((news) => (
-          <Link
-            to={userId ? `/news-detail/${news.id}` : "/login"}
+  return (    <section className="tpost">      <Heading title="Tech" />      {techNews.length > 0 ? (
+        techNews.map((news) => (          <Link            to={userId ? `/news-detail/${news.id}` : "/login"}
             key={news.id}
-            className="box flexSB tpost-card"
-          >
-            <div className="img">
-              <img src={news.image_url || "/placeholder.jpg"} alt={news.title} />
-            </div>
-            <div className="text">
-              <h1 className="title">
-                {news.title.length > 35 ? `${news.title.slice(0, 35)}...` : news.title}
-              </h1>
-              <span>{new Date(news.date_published).toLocaleDateString()}</span>
-            </div>
-          </Link>
-        ))
-      ) : (
-        <p className="tpost-no-news">No technology news available at the moment.</p>
-      )}
-    </section>
-  );
+            className="box flexSB tpost-card"          >            <div className="img">              <img src={news.image_url || "/placeholder.jpg"} alt={news.title} />
+            </div>            <div className="text">              <h1 className="title">                {news.title.length > 35 ? `${news.title.slice(0, 35)}...` : news.title}
+              </h1>              <span>{new Date(news.date_published).toLocaleDateString()}</span>
+            </div>          </Link>        ))      ) : (        <p className="tpost-no-news">No technology news available at the moment.</p>      )}
+    </section>  );
 };
 
 export default Tpost;

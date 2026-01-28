@@ -13,7 +13,6 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
       xmlns="http://www.w3.org/2000/svg"
       style={{ maxWidth: "100%", height: "auto" }}
     >
-      {/* Background gradient definition */}
       <defs>
         <linearGradient id={logoGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor={navBar ? "#fff" : "#1a73e8"} />
@@ -28,10 +27,9 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
           <stop offset="100%" stopColor="#ea4335" />
         </linearGradient>
       </defs>
-
-      {/* Main icon/symbol */}
+      {}
       <g>
-        {/* Icon background circle */}
+        {}
         <circle
           cx="35"
           cy="50"
@@ -40,8 +38,7 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
           opacity={navBar ? 0.15 : 0.1}
           style={{ transition: "opacity 0.3s ease" }}
         />
-
-        {/* Outer circle border */}
+        {}
         <circle
           cx="35"
           cy="50"
@@ -51,10 +48,9 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
           strokeWidth="2"
           opacity={navBar ? 0.8 : 1}
         />
-
-        {/* Newspaper/document icon */}
+        {}
         <g transform="translate(20, 35)">
-          {/* Main document shape */}
+          {}
           <rect 
             x="0" 
             y="0" 
@@ -63,8 +59,7 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
             rx="2" 
             fill={navBar ? "#fff" : "#1a73e8"} 
           />
-
-          {/* Lines representing text */}
+          {}
           <line
             x1="4"
             y1="6"
@@ -103,8 +98,7 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
           />
         </g>
       </g>
-
-      {/* Text "NEWS" */}
+      {}
       <text
         x="75"
         y="60"
@@ -116,8 +110,7 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
       >
         NEWS
       </text>
-
-      {/* Text "24" - accent */}
+      {}
       <text
         x="340"
         y="60"
@@ -128,8 +121,7 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
       >
         24
       </text>
-
-      {/* Decorative line under text */}
+      {}
       <line
         x1="75"
         y1="72"
@@ -139,8 +131,7 @@ const ModernLogo = ({ width = "300", height = "80", navBar = false }) => {
         strokeWidth="3"
         strokeLinecap="round"
       />
-
-      {/* Tagline/subtitle */}
+      {}
       <text
         x="75"
         y="92"

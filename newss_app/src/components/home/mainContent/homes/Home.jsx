@@ -10,25 +10,12 @@ import News from "../../../News";
 import News2 from "../../../News2";
 
 const Homes = () => {
-  // Check if user_id is present in sessionStorage
+  
   const userId = sessionStorage.getItem("user_id");
 
-  return (
-    <>
-      <main>
-        <div className="container">
-          <section className="mainContent">
-            <Popular />
-            {/* Conditionally render News or News2 based on user_id */}
+  return (    <>      <main>        <div className="container">          <section className="mainContent">            <Popular />            {}
             {userId ? <News2 /> : <News />}
-          </section>
-          <section className="sideContent">
-            <Side />
-          </section>
-        </div>
-      </main>
-    </>
-  );
+          </section>          <section className="sideContent">            <Side />          </section>        </div>      </main>    </>  );
 };
 
 export default Homes;

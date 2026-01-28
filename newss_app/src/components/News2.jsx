@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from "../api/client";
 import { Link } from 'react-router-dom';
-import './News.css'; // Add your CSS styles for news display
+import './News.css'; 
 
 function News2() {
     const [newsList, setNewsList] = useState([]);
@@ -42,70 +42,42 @@ function News2() {
             categorized[category].push(item);
         });
 
-        // Sort categories, ensuring "General" is first
         const sortedCategories = Object.keys(categorized).sort((a, b) => {
             if (a === 'General') return -1;
             if (b === 'General') return 1;
             return a.localeCompare(b);
         });
 
-        // Return an ordered object of categories
         return sortedCategories.reduce((acc, category) => {
             acc[category] = categorized[category];
             return acc;
         }, {});
     };
 
-    return (
-        <>
-            <div className="news-container">
-                <h2 className="text-center">
-                    News
-                </h2>
-                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+    return (        <>            <div className="news-container">                <h2 className="text-center">                    News                </h2>                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-                {/* Ads Section */}
-                <div className="ads-section">
-                    <h3 className="ads-title">Sponsored</h3>
-                    {ads.length > 0 && ads.map((ad) => (
+                {}
+                <div className="ads-section">                    <h3 className="ads-title">Sponsored</h3>                    {ads.length > 0 && ads.map((ad) => (
                         <div className="ads-content" key={ad.id}>
                             <a href={ad.link_url} target="_blank" rel="noopener noreferrer">
                                 <img src={ad.image_url} alt={ad.title} className="ad-image" />
-                            </a>
-                            {ad.description && <p>{ad.description}</p>}
+                            </a>                            {ad.description && <p>{ad.description}</p>}
                             <p>{ad.content}</p>
-                        </div>
-                    ))}
-                </div>
-
-                {Object.keys(categorizeNews()).map((category) => (
+                        </div>                    ))}
+                </div>                {Object.keys(categorizeNews()).map((category) => (
                     <div key={category} className="category-section">
                         <h3 className="category-heading">{category}</h3>
-                        <div className="news-cards-container">
-                            {categorizeNews()[category].map((news) => (
-                                <Link 
-                                    to={`/news-detail/${news.id}`} 
+                        <div className="news-cards-container">                            {categorizeNews()[category].map((news) => (
+                                <Link                                     to={`/news-detail/${news.id}`} 
                                     key={news.id} 
-                                    className="news-cardd"
-                                >
-                                    <div>
-                                        <img 
-                                            src={news.image_url || 'https://via.placeholder.com/150'} 
+                                    className="news-cardd"                                >                                    <div>                                        <img                                             src={news.image_url || 'https:
                                             alt={news.title} 
-                                            className="news-image" 
-                                        />
-                                        <h3 className="news-title">{news.title}</h3>
+                                            className="news-image"                                         />                                        <h3 className="news-title">{news.title}</h3>
                                         <p className="news-description">{news.description}</p>
                                         <p className="news-content">{news.content}</p>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </>
-    );
+                                    </div>                                </Link>                            ))}
+                        </div>                    </div>                ))}
+            </div>        </>    );
 }
 
 export default News2;
