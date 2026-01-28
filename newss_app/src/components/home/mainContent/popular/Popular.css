@@ -1,32 +1,75 @@
 .popular .box {
   background-color: #fff;
   display: flex;
-  /* #18  copy*/
-  /*box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;*/
   position: relative;
-  margin: 15px 15px 15px 0;
-  /*box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;*/
+  margin: 0 0 20px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.15), 0 4px 8px 3px rgba(60, 64, 67, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
+
+.popular .box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px 0 rgba(60, 64, 67, 0.2), 0 8px 16px 6px rgba(60, 64, 67, 0.12);
+  border-color: rgba(26, 115, 232, 0.2);
+}
+
 .popular .images {
   position: relative;
-  height: 150px;
+  height: 160px;
+  width: 200px;
+  flex-shrink: 0;
+  overflow: hidden;
 }
+
 .popular img {
   width: 100%;
-  height: 150px;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.popular .box:hover img {
+  transform: scale(1.1);
+}
+
+.popular .text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .popular .text h1 {
-  padding: 20px 0 0 20px;
+  padding: 20px 20px 12px 20px;
   margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #202124;
+  transition: color 0.3s ease;
 }
+
+.popular .box:hover .text h1 {
+  color: #1a73e8;
+}
+
 .popular .date {
-  margin-top: 15px;
-  padding: 0 0 0 20px;
+  margin-top: 8px;
+  padding: 0 20px;
+  color: #5f6368;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .popular .comment {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 5px 0 0 20px;
-  margin-top: 5px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 12px 20px;
+  margin-top: auto;
+  color: #5f6368;
+  font-size: 13px;
+  font-weight: 500;
 }

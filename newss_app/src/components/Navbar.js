@@ -1,38 +1,80 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import ModernLogo from "./common/header/ModernLogo";
 import './Navbar.css'
-<style>
-	
-</style>
 
 const Navbar = () => {
+	const [isOpen, setIsOpen] = useState(false);
+
+	const toggleMenu = () => {
+		setIsOpen(!isOpen);
+	};
+
 	return (
-		<div>
-			<nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-black example" data-bs-theme="dark">
-				<div className="container-fluid">
-					<Link className="navbar-brand" style={{ fontSize: "25px",marginLeft:'20px' }} to="/">
-						News 24
-					</Link>
-					<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span className="navbar-toggler-icon"></span>
-					</button>
-					<div className="collapse navbar-collapse nav-center " id="navbarSupportedContent">
-						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
-							<li className="nav-item ">
-								<Link className="nav-link" aria-current="page" to="/home">
-									Home
-								</Link>
-							</li>
-							<li className="nav-item">
-								<Link className="nav-link " to="/login">
-									Login
-								</Link>
-							</li>
-						</ul>
+		<nav className="navbar-professional">
+			<div className="navbar-container">
+				{/* Logo Section */}
+				<Link to="/" className="navbar-logo-link">
+					<div className="navbar-logo">
+						<ModernLogo width="180" height="50" navBar={true} />
+					</div>
+				</Link>
+
+				{/* Mobile Menu Toggle Button */}
+				<button 
+					className={`navbar-toggle ${isOpen ? 'active' : ''}`}
+					onClick={toggleMenu}
+					aria-label="Toggle navigation"
+				>
+					<span className="hamburger-line"></span>
+					<span className="hamburger-line"></span>
+					<span className="hamburger-line"></span>
+				</button>
+
+				{/* Navigation Menu */}
+				<div className={`navbar-menu ${isOpen ? 'active' : ''}`}>
+					<ul className="navbar-nav">
+						<li className="navbar-item">
+							<Link 
+								to="/home" 
+								className="navbar-link"
+								onClick={() => setIsOpen(false)}
+							>
+								<span className="nav-icon">🏠</span>
+								Home
+							</Link>
+						</li>
+						<li className="navbar-item">
+							<Link 
+								to="/login" 
+								className="navbar-link"
+								onClick={() => setIsOpen(false)}
+							>
+								<span className="nav-icon">🔐</span>
+								Login
+							</Link>
+						</li>
+						<li className="navbar-item">
+							<Link 
+								to="/" 
+								className="navbar-link"
+								onClick={() => setIsOpen(false)}
+							>
+								<span className="nav-icon">📰</span>
+								News
+							</Link>
+						</li>
+					</ul>
+
+					{/* CTA Button */}
+					<div className="navbar-cta">
+						<Link to="/login" className="cta-button">
+							Subscribe
+						</Link>
 					</div>
 				</div>
-			</nav>
-		</div>
+			</div>
+		</nav>
 	);
 };
 

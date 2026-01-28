@@ -1,51 +1,113 @@
 footer {
-  background-color: #000;
+  background: linear-gradient(135deg, #202124 0%, #292a2d 100%);
   color: #fff;
-  padding: 50px 0;
-  margin-top: 50px;
+  padding: 60px 0 30px;
+  margin-top: 80px;
+  position: relative;
 }
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(26, 115, 232, 0.5), transparent);
+}
+
 footer .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 30px;
+  grid-gap: 40px;
 }
+
 footer .logo p {
   margin: 20px 0;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
 }
+
 footer h3 {
-  margin-bottom: 20px;
-  font-weight: 500;
+  margin-bottom: 24px;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  position: relative;
+  padding-bottom: 12px;
 }
+
+footer h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #1a73e8, #4285f4);
+  border-radius: 2px;
+}
+
 footer .item {
   display: flex;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
 }
+
+footer .item:hover {
+  transform: translateX(4px);
+}
+
 footer .item img {
   width: 80px;
   height: 80px;
   object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
 footer .item p {
   padding: 10px 20px;
+  line-height: 1.6;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
 }
+
 footer ul li {
-  margin-bottom: 20px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  padding-bottom: 5px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
   display: flex;
   justify-content: space-between;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 14px;
 }
+
+footer ul li:hover {
+  padding-left: 8px;
+  border-color: #1a73e8;
+  color: #4285f4;
+}
+
 footer ul li:nth-last-child(1) {
   border-bottom: none;
 }
+
 .legal {
-  padding: 15px;
-  background-color: #000;
-  color: grey;
-  border-top: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 24px;
+  background: linear-gradient(135deg, #181818 0%, #1f1f1f 100%);
+  color: rgba(255, 255, 255, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  font-size: 13px;
 }
+
 .legal i {
-  color: red;
+  color: #ea4335;
+  margin: 0 4px;
 }
 
 /* Responsive styles */

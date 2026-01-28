@@ -1,4 +1,5 @@
 import React from "react";
+import ModernLogo from "./ModernLogo";
 
 const Head = () => {
   return (
@@ -10,6 +11,7 @@ const Head = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          padding: "40px 20px",
         }}
       >
         <div
@@ -21,15 +23,8 @@ const Head = () => {
             width: "100%",
           }}
         >
-          <div className="logo">
-            <img
-              src="../images/logo2.png"
-              alt=""
-              style={{
-                width: "500px",
-                maxWidth: "100%",
-              }}
-            />
+          <div className="logo" style={{ maxWidth: "600px", width: "100%" }}>
+            <ModernLogo width="100%" height="auto" navBar={false} />
           </div>
         </div>
       </section>
