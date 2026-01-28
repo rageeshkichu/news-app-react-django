@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../../../api/client";
 import Heading from "../../../common/heading/Heading";
 
 const Popular = () => {
@@ -32,7 +32,7 @@ const Popular = () => {
   useEffect(() => {
     const fetchAllNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/");
+        const response = await api.get("/api/news/");
         setPopular(response.data.news || []);
       } catch (error) {
         console.error("Error fetching news:", error);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../api/client";
 import { FiFileText, FiMonitor } from 'react-icons/fi'; // Add icons
 import './AdminHome.css';
 import AdminNav from './AdminNav';
@@ -12,10 +12,10 @@ const AdminHome = () => {
     useEffect(() => {
         const fetchCounts = async () => {
             try {
-                const newsResponse = await axios.get('http://localhost:8000/api/news/count/');
+                const newsResponse = await api.get("/api/news/count/");
                 setNewsCount(newsResponse.data.count);
 
-                const adsResponse = await axios.get('http://localhost:8000/api/ads/count/');
+                const adsResponse = await api.get("/api/ads/count/");
                 setAdsCount(adsResponse.data.count);
             } catch (error) {
                 console.error('Error fetching counts:', error);

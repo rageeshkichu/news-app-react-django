@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/client";
 import { Link } from "react-router-dom";
 import "./AdminViewNews.css";
 import AdminNav from "./AdminNav";
@@ -14,8 +14,7 @@ function AdminViewNews() {
     // Fetch the list of news on component mount
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/");
-        console.log(response.data.news);
+        const response = await api.get("/api/news/");
         setNewsList(response.data.news); // Assuming response contains a 'news' array
       } catch (error) {
         setErrorMessage("Failed to fetch news. Please try again later.");
@@ -29,7 +28,7 @@ function AdminViewNews() {
   // Function to handle news deletion
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/news/${id}/`);
+      await api.delete(`/api/news/${id}/`);
       setNewsList(newsList.filter((news) => news.id !== id)); // Update state after deletion
       setSuccessMessage("News deleted successfully!"); // Show success popup
       setTimeout(() => {

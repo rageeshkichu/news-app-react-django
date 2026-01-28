@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/client";
 import { Link } from "react-router-dom";
 import "./AdminViewAds.css";
 import AdminNav from "./AdminNav";
@@ -14,7 +14,7 @@ function AdminViewAds() {
     // Fetch the list of ads on component mount
     const fetchAds = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/ads/");
+        const response = await api.get("/api/ads/");
         setAdsList(response.data.ads); // Assuming response contains an 'ads' array
       } catch (error) {
         setErrorMessage("Failed to fetch ads. Please try again later.");
@@ -28,7 +28,7 @@ function AdminViewAds() {
   // Function to handle ad deletion
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/ads/${id}/`);
+      await api.delete(`/api/ads/${id}/`);
       setAdsList(adsList.filter((ad) => ad.id !== id)); // Update state after deletion
       setSuccessMessage("Ad deleted successfully!"); // Show success popup
       setTimeout(() => {

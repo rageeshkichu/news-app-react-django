@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from "../../../api/client";
 import './UserRegister.css';
 import Navbar from '../../Navbar';
 
@@ -23,18 +23,9 @@ function UserRegister() {
     setError('');
     setMessage('');
     try {
-      // Log form data for debugging
-      console.log('Submitting user data:', formData);
-
-      // Send the form data as JSON with appropriate headers
-      const response = await axios.post(
-        'http://localhost:8000/api/register/',
+      const response = await api.post(
+        "/api/register/",
         JSON.stringify(formData),
-        {
-          headers: {
-            'Content-Type': 'application/json', // Ensures data is sent as JSON
-          },
-        }
       );
 
       // Handle success

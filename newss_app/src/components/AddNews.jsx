@@ -1,5 +1,5 @@
 import React, { useState, useRef,useEffect } from 'react';
-import axios from 'axios';
+import api from "../api/client";
 import './AddNews.css';
 import AdminNav from './AdminNav';
 import Footer from './common/footer/Footer';
@@ -69,7 +69,7 @@ const AddNews = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/api/addNews/', newsData, {
+            const response = await api.post("/api/addNews/", newsData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 

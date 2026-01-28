@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Make sure axios is imported
+import api from "../api/client";
 import './AdminNav.css';
 
 const AdminNav = () => {
@@ -8,7 +8,7 @@ const AdminNav = () => {
 
     const handleLogout = async () => { // Marking the function as async
         try {
-            await axios.post("http://localhost:8000/api/logout/");
+            await api.post("/api/logout/");
             sessionStorage.removeItem("user_id");
             alert("You have been logged out.");
             navigate("/login");

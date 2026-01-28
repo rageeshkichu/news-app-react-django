@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../../../api/client";
 import Heading from "../../../common/heading/Heading";
 import "./tpost.css";
 
@@ -12,7 +12,7 @@ const Tpost = () => {
   useEffect(() => {
     const fetchTechNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/category/Technology/");
+        const response = await api.get("/api/news/category/Technology/");
         if (response.data.success) {
           setTechNews(response.data.data || []);
         } else {
@@ -50,7 +50,7 @@ const Tpost = () => {
             className="box flexSB tpost-card"
           >
             <div className="img">
-              <img src={news.image || "/placeholder.jpg"} alt={news.title} />
+              <img src={news.image_url || "/placeholder.jpg"} alt={news.title} />
             </div>
             <div className="text">
               <h1 className="title">

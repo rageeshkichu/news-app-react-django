@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/client";
 
 const Card = () => {
   const [news, setNews] = useState([]); // State to store news data
 
   useEffect(() => {
-    console.log("useEffect triggered"); // Debugging: Check if useEffect runs only once
-    
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/");
-
-        // Check if the response data is as expected
-        console.log("Fetched news:", response.data);
+        const response = await api.get("/api/news/");
 
         // Only update the state if the response is valid
         if (response.data && Array.isArray(response.data.news)) {

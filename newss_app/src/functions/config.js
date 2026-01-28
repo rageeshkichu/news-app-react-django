@@ -1,7 +1,6 @@
-// base_url: "https://altosconnectweb.in"
+// API Configuration - reads from .env file
 const config = {
-    base_url: "http://127.0.0.1:8000"
-    // base_url: "https://altosconnectonline.com"
-
+    base_url: process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000"
 }
+
 export default config

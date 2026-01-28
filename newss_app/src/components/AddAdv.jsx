@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from "../api/client";
 import './AddAdv.css'; // Make sure to create this CSS file
 import AdminNav from './AdminNav';
 import Footer from './common/footer/Footer';
@@ -35,7 +35,7 @@ const AddAdv = () => {
         advData.append('image', formData.image);
 
         try {
-            const response = await axios.post('http://localhost:8000/api/addAdv/', advData, {
+            const response = await api.post("/api/addAdv/", advData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../../api/client";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 import UserNavbar from "../Navbar/UserNavbar";
@@ -36,8 +36,8 @@ function UserProfile() {
 
     const fetchUserData = async (userId) => {
         try {
-            const response = await axios.get(
-                `http://localhost:8000/api/get-userprofile-details/${userId}`
+            const response = await api.get(
+                `/api/get-userprofile-details/${userId}`
             );
             if (response.data.status === "success") {
                 setUserDetails({
@@ -70,8 +70,8 @@ function UserProfile() {
         }
 
         try {
-            const response = await axios.post(
-                "http://localhost:8000/api/update-user-details/",
+            const response = await api.post(
+                "/api/update-user-details/",
                 {
                     user_id: userId,
                     first_name: userDetails.firstName,
@@ -111,8 +111,8 @@ function UserProfile() {
         }
 
         try {
-            const response = await axios.post(
-                "http://localhost:8000/api/reset-password/",
+            const response = await api.post(
+                "/api/reset-password/",
                 {
                     user_id: userId,
                     new_password: newPassword,
@@ -138,7 +138,7 @@ function UserProfile() {
 
     const handleLogout = async () => {
         try {
-            await axios.post("http://localhost:8000/api/logout/");
+            await api.post("/api/logout/");
             sessionStorage.removeItem("user_id");
             alert("You have been logged out.");
             navigate("/login");

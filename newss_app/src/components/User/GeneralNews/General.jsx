@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../../../api/client";
 import { Link } from 'react-router-dom';
 import './General.css';
 
@@ -11,10 +11,9 @@ function General() {
 
   // Fetch news data when the component mounts
   useEffect(() => {
-    axios
-      .get('http://localhost:8000/api/news/category/General/')
+    api
+      .get('/api/news/category/General/')
       .then((response) => {
-        console.log(response.data.data)
         setNews(response.data.data);
         setLoading(false);
       })

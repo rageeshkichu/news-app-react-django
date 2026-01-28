@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/client';
 import { useParams, useNavigate } from 'react-router-dom';
 import './EditAdv.css'; // Make sure to create this CSS file
 import AdminNav from './AdminNav';
@@ -21,7 +21,7 @@ const EditAdv = () => {
         // Fetch existing advertisement data by ID
         const fetchAdvData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/adv/${id}/`);
+                const response = await api.get(`/api/adv/${id}/`);
                 const { title, description, content } = response.data;
                 setFormData({ title, description, content, image: null });
             } catch (error) {
@@ -56,7 +56,7 @@ const EditAdv = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:8000/api/advv/${id}/`, advData, {
+                const response = await api.post(`/api/advv/${id}/`, advData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 

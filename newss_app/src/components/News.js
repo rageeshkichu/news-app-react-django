@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../api/client";
 import { Link } from 'react-router-dom';
 import './News.css'; // Add your CSS styles for news display
 import Navbar from './Navbar';
@@ -13,7 +13,7 @@ function News() {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/news/');
+                const response = await api.get("/api/news/");
                 setNewsList(response.data.news);
             } catch (error) {
                 setErrorMessage('Failed to fetch news. Please try again later.');
@@ -23,7 +23,7 @@ function News() {
 
         const fetchAds = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/ads/');
+                const response = await api.get("/api/ads/");
                 setAds(response.data.ads);
             } catch (error) {
                 console.error("Failed to fetch ads", error);

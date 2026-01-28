@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/client";
 import "./style.css";
 
 const SinglePageSlider = () => {
@@ -58,7 +58,7 @@ const SinglePageSlider = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/");
+        const response = await api.get("/api/news/");
         setNews(response.data.news || []); // Assuming news is in the `news` key of the response
       } catch (error) {
         console.error("Error fetching news data:", error);

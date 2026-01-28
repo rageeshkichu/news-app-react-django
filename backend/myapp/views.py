@@ -25,15 +25,11 @@ def loginUser(request):
         username = data.get('username')
         password = data.get('password')
 
-        # Debugging: Print the received username and password
-        print(f"Attempting login for username: {username}")
-
         # Authenticate user
         user = authenticate(request, username=username, password=password)
 
         # Check if user authentication was successful
         if user is not None:
-            print(f"User {username} authenticated successfully")
 
             # Log the user in
             login(request, user)
@@ -45,9 +41,6 @@ def loginUser(request):
             user_id = user.id  # Get the user ID
             is_superuser = user.is_superuser  # Check if user is a superuser
 
-            # Debugging: Print user ID and superuser status
-            print(f"User ID: {user_id}, Is Superuser: {is_superuser}")
-
             # Return success response along with 'is_superuser' status and 'user_id'
             return JsonResponse({
                 'success': True,
@@ -57,7 +50,6 @@ def loginUser(request):
             })
 
         else:
-            print(f"Authentication failed for username: {username}")  # Debugging if authentication fails
             return JsonResponse({'success': False, 'message': 'Invalid username or password'}, status=401)
 
     return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'}, status=405)
@@ -78,8 +70,6 @@ def add_news(request):
         author_image = request.FILES.get('authorImage')
         time = request.POST.get('time')
         place = request.POST.get('place')
-        print(image)
-        print(author_image)
 
         # Validate required fields
         if not all([title, description, content, author_name, time, place]):
@@ -165,11 +155,11 @@ def get_delete_news(request, id):
             'description': news.description,
             'content': news.content,
             'category': news.category,
-            'image_url': news.image.url if news.image else None,
+            'image_url': request.build_absolute_uri(news.image.url) if news.image else None,
             'time':news.time,
             'place':news.place,
-            'authorName':news.author_name,
-            'authorImage':news.author_image.url if news.author_image else None,
+            'author_name':news.author_name,
+            'author_image': request.build_absolute_uri(news.author_image.url) if news.author_image else None,
         }, status=200)
 
     elif request.method == 'DELETE':
@@ -379,7 +369,7 @@ def ad_list(request):
             'description': ad.description,
             'content': ad.content,
             'publication_date': ad.publication_date.isoformat(),
-            'image_url': ad.image.url if ad.image else None,  # Handling image URL
+            'image_url': request.build_absolute_uri(ad.image.url) if ad.image else None,  # Handling image URL
         }
         ads_data.append(ad_data)
     
@@ -396,9 +386,6 @@ def register_user(request):
             email = data.get('email')
             password = data.get('password')
             role = data.get('role', '2')  # Default role value if not provided
-
-            # Print the retrieved data for debugging
-            print(f"Username: {username}, Email: {email}, Password: {password}")
 
             # Check if all required fields are present
             if not username or not email or not password:
@@ -444,8 +431,13 @@ def get_news_by_category(request, category):
             'title': item.title,
             'description': item.description,
             'content':item.content,
+            'category': item.category,
             'date_published': item.publication_date,
-            'image': request.build_absolute_uri(item.image.url) if item.image else None  # assuming image is in the model
+            'image_url': request.build_absolute_uri(item.image.url) if item.image else None,
+            'author_name': item.author_name,
+            'author_image': request.build_absolute_uri(item.author_image.url) if item.author_image else None,
+            'time': item.time,
+            'place': item.place
         })
     
     return JsonResponse({'success': True, 'data': news_list})
@@ -456,7 +448,6 @@ def get_user_details(request, user_id):
         try:
             # Fetch the user by user_id
             user = User.objects.get(id=user_id)
-            print(user)
 
             # Prepare the data to return
             data = {
@@ -477,13 +468,11 @@ def get_user_details(request, user_id):
 def update_user_details(request):
     if request.method == "POST":
         try:
-            print("Received POST request")  # Debugging
             # Load the JSON data from the request body
             data = json.loads(request.body)
             
             # Extract the user_id from the request data
             user_id = data.get("user_id")
-            print(f"Received user_id: {user_id}")  # Debugging
 
             if not user_id:
                 return JsonResponse({"status": "error", "message": "User ID is required"}, status=400)
@@ -491,7 +480,6 @@ def update_user_details(request):
             # Fetch the user by user_id
             try:
                 user = User.objects.get(id=user_id)
-                print(f"Found user: {user}")  # Debugging
             except User.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "User not found"}, status=404)
 
@@ -516,7 +504,6 @@ def update_user_details(request):
             return JsonResponse({"status": "success", "message": "User details updated successfully"}, status=200)
 
         except Exception as e:
-            print(f"Error: {e}")  # Debugging
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
@@ -545,15 +532,12 @@ def logoutUser(request):
 def reset_password(request):
     if request.method == "POST":
         try:
-            print("Received POST request")  # Debugging
             # Load the JSON data from the request body
             data = json.loads(request.body)
 
             # Extract the user_id and new_password from the request data
             user_id = data.get("user_id")
             new_password = data.get("new_password")
-
-            print(f"Received user_id: {user_id}, new_password: {new_password}")  # Debugging
 
             if not user_id or not new_password:
                 return JsonResponse(
@@ -564,19 +548,15 @@ def reset_password(request):
             # Fetch the user by user_id
             try:
                 user = User.objects.get(id=user_id)
-                print(f"Found user: {user}")  # Debugging
             except User.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "User not found"}, status=404)
 
             # Update the user's password
             user.password = make_password(new_password)
             user.save()
-
-            print("Password updated successfully")  # Debugging
             return JsonResponse({"status": "success", "message": "Password reset successfully"}, status=200)
 
         except Exception as e:
-            print(f"Error: {e}")  # Debugging
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)

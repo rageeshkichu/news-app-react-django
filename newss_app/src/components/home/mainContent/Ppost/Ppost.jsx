@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../../../api/client";
 import Heading from "../../../common/heading/Heading";
 import "./ppost.css";
 
@@ -20,7 +20,7 @@ const Ppost = () => {
   useEffect(() => {
     const fetchLocalNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/");
+        const response = await api.get("/api/news/");
         const filteredNews = response.data.news.filter(
           (newsItem) => newsItem.category.toLowerCase() === "general"
         );

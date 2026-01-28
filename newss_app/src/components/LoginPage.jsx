@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../api/client";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from './Navbar';
 import './LoginPage.css';
@@ -27,8 +27,7 @@ const LoginPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const loginResponse = await axios.post('http://localhost:8000/api/loginUser/', formData);
-            console.log("Response from backend:", loginResponse);
+            const loginResponse = await api.post("/api/loginUser/", formData);
 
             if (loginResponse.data.success) {
                 const { user_id, is_superuser } = loginResponse.data;

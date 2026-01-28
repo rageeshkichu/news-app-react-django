@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../api/client";
 import { useParams, useNavigate } from 'react-router-dom';
 import './EditNews.css';
 import AdminNav from './AdminNav';
@@ -26,7 +26,7 @@ const EditNews = () => {
     useEffect(() => {
         const fetchNewsData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/news/${id}/`);
+                const response = await api.get(`/api/news/${id}/`);
                 const { title, description, content, category, authorName, time, place } = response.data;
                 setFormData({
                     title,
@@ -70,7 +70,7 @@ const EditNews = () => {
         });
 
         try {
-            const response = await axios.post(`http://localhost:8000/api/newss/${id}/`, newsData, {
+            const response = await api.post(`/api/newss/${id}/`, newsData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 

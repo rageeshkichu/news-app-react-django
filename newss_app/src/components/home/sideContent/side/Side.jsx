@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../../api/client";
 import "./side.css";
 import Slider from "react-slick";
 import Heading from "../../../common/heading/Heading";
@@ -35,7 +35,7 @@ const Side = () => {
     // Fetch ads from API
     const fetchAds = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/ads/");
+        const response = await api.get("/api/ads/");
         setAds(response.data.ads || []); // Assuming ads are in the `ads` key of the response
       } catch (error) {
         console.error("Error fetching ads:", error);
@@ -45,7 +45,7 @@ const Side = () => {
     // Fetch gallery images from API
     const fetchGalleryImages = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/news/");
+        const response = await api.get("/api/news/");
         setGalleryImages(response.data.news || []); // Assuming news images are in the `news` key
       } catch (error) {
         console.error("Error fetching gallery images:", error);

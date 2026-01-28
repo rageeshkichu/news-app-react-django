@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/client';
 import { useParams } from 'react-router-dom';
 import './NewsDetails.css';
 import SinglePageSlider from './singlePage/slider/SinglePageSlider';
@@ -15,7 +15,7 @@ function NewsDetails() {
   useEffect(() => {
     const fetchNewsDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/newsdetails/${id}/`);
+        const response = await api.get(`/api/newsdetails/${id}/`);
         setNewsDetail(response.data);
         window.scrollTo(0, 0);
       } catch (error) {
