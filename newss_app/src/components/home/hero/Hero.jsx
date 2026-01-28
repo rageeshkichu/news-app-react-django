@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import axios from "axios";
 import { Link } from "react-router-dom";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./hero.css";
 import { fetchNews } from "../../../redux/actions/NewsActions";
 import Loader from "../../common/loader/Loader";
@@ -15,19 +16,21 @@ const Hero = () => {
       dispatch( fetchNews() );
     }, [ dispatch ]);
 
+    useEffect(() => {
+      if (error) {
+    toast.error(error);}
+    }, [error]);
+
   if( loading ) {
     return < Loader />;
   }
 
-  if( error ) {
-    return <p>{ error }</p>
-  }
-
   return (
+    <>
     <section className="hero">
       <div className="container">
-        {news.length === 0 ? (
-          <p>Loading news...</p>
+        {news.length === 0 && !loading ? (
+          <p>No news available</p>
         ) : (
           news.slice(0, 4).map((item) => {
             const userId = sessionStorage.getItem("user_id");
@@ -73,7 +76,13 @@ const Hero = () => {
         )}
       </div>
     </section>
+    <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    theme="dark"
+    transition={Bounce}
+  />
+  </>
   );
 };
-
 export default Hero;
