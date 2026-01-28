@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "./hero.css";
 import { fetchNews } from "../../../redux/actions/NewsActions";
+import Loader from "../../common/loader/Loader";
 
 const Hero = () => {
 
@@ -15,7 +16,7 @@ const Hero = () => {
     }, [ dispatch ]);
 
   if( loading ) {
-    return <p>Loading...</p>
+    return < Loader />;
   }
 
   if( error ) {
