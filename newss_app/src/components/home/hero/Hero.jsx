@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import "./hero.css";
 
 const Hero = () => {
-  const [news, setNews] = useState([]); // State to store fetched news
+  const [news, setNews] = useState([]);
 
-  // Function to fetch news data
   const fetchNews = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/news/");
       if (response.data && Array.isArray(response.data.news)) {
-        // Slice the first 4 news items directly here
-        setNews(response.data.news.slice(0, 4)); // Store only the first 4 items
+        setNews(response.data.news.slice(0, 4));
       } else {
         console.error("News data is not in the expected format.");
       }
@@ -20,11 +18,9 @@ const Hero = () => {
       console.error("Error fetching news:", error);
     }
   };
-
-  // Fetch news data only once when the component mounts
   useEffect(() => {
     fetchNews();
-  }, []); // Empty dependency array ensures it runs only once
+  }, []);
 
   return (
     <section className="hero">
