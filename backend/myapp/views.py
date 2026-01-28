@@ -6,7 +6,8 @@ import json
 import logging
 from .models import News, Advertisement
 from django.contrib.auth.decorators import login_required
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.views.decorators.http import require_http_methods
 from rest_framework.response import Response
 from rest_framework import status
@@ -67,7 +68,9 @@ def loginUser(request):
             'success': False, 
             'message': 'An error occurred during login'
         }, status=500)
-@csrf_exempt
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def add_news(request):
     if request.method != 'POST':
         logger.warning(f'Invalid request method for add_news: {request.method}')
@@ -118,7 +121,9 @@ def add_news(request):
     except Exception as e:
         logger.error(f'Error adding news: {str(e)}')
         return JsonResponse({'success': False, 'message': 'An error occurred while adding news'}, status=500)
-@csrf_exempt
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def add_adv(request):
     if request.method != 'POST':
         logger.warning(f'Invalid request method for add_adv: {request.method}')
@@ -145,7 +150,8 @@ def add_adv(request):
     except Exception as e:
         logger.error(f'Error adding advertisement: {str(e)}')
         return JsonResponse({'success': False, 'message': 'An error occurred while adding advertisement'}, status=500)
-@csrf_exempt
+
+@api_view(['GET'])
 def fetch_all_news(request):
     if request.method != 'GET':
         logger.warning(f'Invalid request method for fetch_all_news: {request.method}')
@@ -175,8 +181,11 @@ def fetch_all_news(request):
     except Exception as e:
         logger.error(f'Error fetching news: {str(e)}')
         return JsonResponse({'error': 'An error occurred while fetching news'}, status=500)
-@csrf_exempt
+
+@api_view(['GET', 'DELETE'])
 def get_delete_news(request, id):
+    if request.method == 'DELETE' and not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
     try:
         news = News.objects.get(id=id)
     except News.DoesNotExist:
@@ -211,7 +220,9 @@ def get_delete_news(request, id):
         logger.error(f'Error in get_delete_news: {str(e)}')
         return JsonResponse({'error': 'An error occurred'}, status=500)
 from django.utils import timezone
-@csrf_exempt
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def news_update(request, id):
     try:
         news = News.objects.get(id=id)
@@ -260,7 +271,8 @@ def news_update(request, id):
     except Exception as e:
         logger.error(f'Error updating news: {str(e)}')
         return JsonResponse({'success': False, 'message': 'An error occurred while updating news'}, status=500)
-@csrf_exempt
+
+@api_view(['GET'])
 def list_ads(request):
     if request.method == 'GET':
         ads_items = Advertisement.objects.all()
@@ -276,7 +288,9 @@ def list_ads(request):
         ]
         return JsonResponse({'ads': ads_list}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-@csrf_exempt
+
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def edit_ad(request, ad_id):
     try:
         ad = Advertisement.objects.get(id=ad_id)
@@ -294,7 +308,8 @@ def edit_ad(request, ad_id):
     elif request.method == 'DELETE':
         ad.delete()
         return JsonResponse({'success': 'News deleted successfully'}, status=204)
-@csrf_exempt
+
+@api_view(['GET'])
 def fetch_ad(request, id):
     if request.method == 'GET':
         try:
@@ -310,7 +325,9 @@ def fetch_ad(request, id):
         except Advertisement.DoesNotExist:
             return JsonResponse({'error': 'Advertisement not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-@csrf_exempt
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def update_ad(request, id):
     try:
         ad = Advertisement.objects.get(id=id)
@@ -323,17 +340,20 @@ def update_ad(request, id):
         ad.image = request.FILES['image']
     ad.save()
     return JsonResponse({'success': True, 'message': 'Ad updated successfully!'}, status=200)
-@csrf_exempt
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def news_count(request):
     count = News.objects.count()
     return JsonResponse({'count': count})
-@csrf_exempt
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def ads_count(request):
     count = Advertisement.objects.count()
     return JsonResponse({'count': count})
-@csrf_exempt
+
+@api_view(['GET'])
 def get_news(request):
     try:
         news_queryset = News.objects.all()
@@ -352,7 +372,8 @@ def get_news(request):
         return JsonResponse({'results': news_data})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-@csrf_exempt
+
+@api_view(['GET'])
 def get_ads(request):
     try:
         ads_queryset = Advertisement.objects.all()
@@ -367,7 +388,8 @@ def get_ads(request):
         return JsonResponse({'results': ads_data})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-@csrf_exempt
+
+@api_view(['GET'])
 def news_detail(request, id):
     news_item = get_object_or_404(News, id=id)
     news_data = {
@@ -383,7 +405,8 @@ def news_detail(request, id):
         'place':news_item.place,
     }
     return JsonResponse(news_data, status=200)
-@csrf_exempt
+
+@api_view(['GET'])
 def ad_list(request):
     ads = Advertisement.objects.all()
     ads_data = []
@@ -465,6 +488,8 @@ def register_user(request):
             'success': False, 
             'message': 'An error occurred during registration'
         }, status=500)
+
+@api_view(['GET'])
 def get_news_by_category(request, category):
     try:
         if not category or len(category) > 50:
@@ -494,7 +519,9 @@ def get_news_by_category(request, category):
     except Exception as e:
         logger.error(f'Error fetching news by category: {str(e)}')
         return JsonResponse({'success': False, 'message': 'An error occurred'}, status=500)
-@csrf_exempt
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_details(request, user_id):
     if request.method != 'GET':
         logger.warning(f'Invalid request method for get_user_details: {request.method}')
@@ -536,7 +563,9 @@ def get_user_details(request, user_id):
             "status": "error", 
             "message": "An error occurred"
         }, status=500)
-@csrf_exempt
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def update_user_details(request):
     if request.method != 'POST':
         logger.warning(f'Invalid request method for update_user_details: {request.method}')
@@ -605,6 +634,7 @@ def update_user_details(request):
             "status": "error", 
             "message": "An error occurred while updating user"
         }, status=500)
+
 @csrf_exempt
 def logoutUser(request):
     if request.method != 'POST':
@@ -643,7 +673,9 @@ def logoutUser(request):
             'success': False, 
             'message': 'An error occurred during logout'
         }, status=500)
-@csrf_exempt
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def reset_password(request):
     if request.method != 'POST':
         logger.warning(f'Invalid request method for reset_password: {request.method}')

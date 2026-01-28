@@ -56,29 +56,56 @@ function News() {
         }, {});
     };
 
-    return (        <>            <Navbar />            <div className="news-container">                <h2 className="text-center">                    News                </h2>                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+    return (
+        <>
+            <Navbar />
+            <div className="news-container">
+                <h2 className="text-center">
+                    News
+                </h2>
+                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
                 {}
-                <div className="ads-section">                    <h3 className="ads-title">Sponsored</h3>                    {ads.length > 0 && ads.map((ad) => (
+                <div className="ads-section">
+                    <h3 className="ads-title">Sponsored</h3>
+                    {ads.length > 0 && ads.map((ad) => (
                         <div className="ads-content" key={ad.id}>
                             <a href={ad.link_url} target="_blank" rel="noopener noreferrer">
                                 <img src={ad.image_url} alt={ad.title} className="ad-image" />
-                            </a>                            {ad.description && <p>{ad.description}</p>}
+                            </a>
+                            {ad.description && <p>{ad.description}</p>}
                             <p>{ad.content}</p>
-                        </div>                    ))}
-                </div>                {Object.keys(categorizeNews()).map((category) => (
+                        </div>
+                    ))}
+                </div>
+                {Object.keys(categorizeNews()).map((category) => (
                     <div key={category} className="category-section">
                         <h3 className="category-heading">{category}</h3>
-                        <div className="news-cards-container">                            {categorizeNews()[category].map((news) => (
-                                <Link                                     to="/login"                                     key={news.id} 
-                                    className="news-card-link"                                >                                    <div className="news-cardd">                                        <img                                             src={news.image_url || 'https:
+                        <div className="news-cards-container">
+                            {categorizeNews()[category].map((news) => (
+                                <Link 
+                                    to="/login" 
+                                    key={news.id} 
+                                    className="news-card-link"
+                                >
+                                    <div className="news-cardd">
+                                        <img 
+                                            src={news.image_url || "/placeholder.jpg"}
                                             alt={news.title} 
-                                            className="news-image"                                         />                                        <h3 className="news-title">{news.title}</h3>
+                                            className="news-image" 
+                                        />
+                                        <h3 className="news-title">{news.title}</h3>
                                         <p className="news-description">{news.description}</p>
                                         <p className="news-content">{news.content}</p>
-                                    </div>                                </Link>                            ))}
-                        </div>                    </div>                ))}
-            </div>        </>    );
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </>
+    );
 }
 
 export default News;
