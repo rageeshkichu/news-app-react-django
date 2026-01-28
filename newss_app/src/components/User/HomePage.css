@@ -1,0 +1,15 @@
+.home-main-content {
+    display: flex;
+    justify-content: space-between; /* Space out the content */
+    gap: 20px; /* Space between the left content and the side component */
+  }
+  
+  .left-content {
+    flex: 1; /* Allow this section to take up the remaining space */
+  }
+  
+  .side {
+    width: 300px; /* Adjust the width of the side component */
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+  

@@ -1,0 +1,143 @@
+/* LoginPageCustom.css */
+
+body {
+    background-color: #e8eaf6;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the login container with a flexible layout */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #e8eaf6;
+    padding: 20px;
+}
+
+/* Adding animation to the login card */
+.login-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    animation: slideIn 0.6s ease-out;
+    transition: transform 0.3s;
+}
+
+.login-card:hover {
+    transform: scale(1.02);
+}
+
+/* Keyframes for sliding animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.login-header {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Error message style */
+.login-alert {
+    background-color: #fce4e4;
+    color: #d9534f;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+/* Enhanced input styles with subtle shadow and transition */
+.login-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-input:focus {
+    border-color: #5c6bc0;
+    box-shadow: 0 4px 8px rgba(92, 107, 192, 0.2);
+}
+
+/* Button with gradient background and smooth transition */
+.login-button {
+    width: 100%;
+    background: linear-gradient(135deg, #5c6bc0, #3949ab);
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-button:hover {
+    background: linear-gradient(135deg, #3949ab, #283593);
+    box-shadow: 0 6px 12px rgba(56, 68, 138, 0.2);
+}
+
+/* Signup link styling */
+.signup-link {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.signup-link a {
+    color: #3949ab;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.signup-link a:hover {
+    color: #1e88e5;
+    text-decoration: underline;
+}
+
+/* Add subtle animation on page load */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

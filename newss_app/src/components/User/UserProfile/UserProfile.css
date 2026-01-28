@@ -1,0 +1,177 @@
+/* General Container Styling */
+.profile-container {
+  width: 80%;
+  max-width: 500px; /* Max width to control scaling on larger screens */
+  min-height: 300px; /* Increase height for better spacing */
+  margin: 100px auto; /* Larger top margin for all screen sizes */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+/* Responsive Font Sizes */
+.profile-header {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Responsive Form Styling */
+.profile-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.form-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Responsive Button Group */
+.button-group {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to stack on smaller screens */
+  gap: 10px;
+  justify-content: center; /* Center buttons in the container */
+  margin-top: 20px;
+}
+
+.update-btn,
+.reset-btn,
+.logout-btn {
+  flex: 1 1 auto; /* Buttons take equal width */
+  min-width: 120px; /* Minimum width for better tap targets */
+  background-color: #dc3545;
+  border: none;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.update-btn:hover,
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Modal */
+.modal-content {
+  width: 90%; /* Adjust modal width for smaller screens */
+  max-width: 400px; /* Cap modal width */
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  font-size: 1.5rem; /* Adjust header size */
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+.modal-content .form-input {
+  font-size: 1rem;
+  padding: 8px;
+}
+
+/* Responsive Button Group in Modal */
+.modal-content .button-group {
+  flex-wrap: wrap;
+  justify-content: center; /* Center modal buttons */
+}
+
+.modal-content .btn-primary,
+.modal-content .btn-secondary {
+  flex: 1 1 auto;
+  min-width: 120px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+/* Media Queries for Small Devices */
+@media (max-width: 768px) {
+  .profile-container {
+    width: 90%;
+    margin: 80px auto; /* Adjust top margin for smaller screens */
+    padding: 15px;
+    min-height: 450px; /* Slightly smaller height for compact screens */
+  }
+
+  .profile-header {
+    font-size: 1.5rem;
+  }
+
+  .form-input {
+    font-size: 0.9rem;
+  }
+
+  .button-group {
+    flex-direction: column; /* Stack buttons on smaller screens */
+  }
+
+  .update-btn,
+  .logout-btn {
+    width: 100%; /* Full width buttons */
+    margin-bottom: 10px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+}
+
+/* Media Queries for Extra-Small Devices */
+@media (max-width: 480px) {
+  .profile-container {
+    margin: 70px auto; /* Further reduce top margin */
+    padding: 15px;
+    min-height: 400px; /* Optimize height for mobile screens */
+  }
+
+  .profile-header {
+    font-size: 1.25rem;
+  }
+
+  .form-input {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .button-group {
+    gap: 5px; /* Reduce gap between buttons */
+  }
+
+  .update-btn,
+  .logout-btn {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .modal-content h3 {
+    font-size: 1.25rem;
+  }
+}

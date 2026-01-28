@@ -1,0 +1,135 @@
+/* General News Container */
+.general-news-container {
+  padding: 30px;
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  line-height: 1.8;
+  transition: transform 0.3s ease;
+}
+
+.general-news-container:hover {
+  transform: translateY(-3px);
+}
+
+/* Title Styling */
+.general-news-container .news-header {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 10px;
+}
+
+/* News Item Styling */
+.general-news-container .news-item {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Title for Each News Item */
+.general-news-container .news-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* Image Styling */
+.general-news-container .news-image {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+/* News Description Styling (Truncated to 3 lines) */
+.general-news-container .news-description {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-align: justify;
+  overflow: hidden; /* Hide overflowing content */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical; /* Specifies the box is oriented vertically */
+  text-overflow: ellipsis; /* Add "..." at the end */
+}
+
+/* News Content Styling (Truncated to 3 lines) */
+.general-news-container .news-content {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-align: justify;
+  overflow: hidden; /* Hide overflowing content */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical; /* Specifies the box is oriented vertically */
+  text-overflow: ellipsis; /* Add "..." at the end */
+}
+
+/* Meta Information */
+.general-news-container .news-meta {
+  font-size: 15px;
+  color: #888;
+  margin-top: 15px;
+}
+
+.general-news-container .news-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Back Button Styling (if needed) */
+.general-news-container .back-btn {
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 30px 0 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+}
+
+.general-news-container .back-btn:hover {
+  background-color: #e74c3c;
+  transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .general-news-container .news-header {
+    font-size: 28px;
+  }
+
+  .general-news-container .news-description {
+    font-size: 16px;
+  }
+
+  .general-news-container .news-content {
+    font-size: 16px;
+  }
+
+  .general-news-container .news-meta {
+    font-size: 13px;
+  }
+}

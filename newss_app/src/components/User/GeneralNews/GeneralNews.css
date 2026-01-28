@@ -1,0 +1,36 @@
+.main-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Adjust the gap as needed */
+    padding: 20px;
+  }
+  
+  .main-content {
+    flex: 3; /* Takes up more space */
+    background-color: #f4f4f4; /* Optional: add some background color */
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .sideContent {
+    flex: 1; /* Takes up less space */
+    background-color: #fff; /* Optional: background color for side content */
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+
+  @media (max-width: 768px) {
+    .main-container {
+      flex-direction: column; /* Stack the sections vertically */
+      align-items: center;
+    }
+  
+    .main-content,
+    .sideContent {
+      width: 100%; /* Full width on smaller screens */
+      margin-bottom: 20px; /* Space between the sections */
+    }
+  }
+  
+  

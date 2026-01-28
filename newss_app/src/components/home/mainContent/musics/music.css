@@ -1,0 +1,54 @@
+.music .box {
+  margin-bottom: 20px;
+  margin-left: 2px;
+}
+
+.music .text {
+  padding: 0 20px;
+}
+
+.music .images {
+  width: 100%;
+  height: auto;
+}
+
+.music img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.music h1 {
+  font-size: 20px;
+}
+
+/* Responsive styles for tablets and larger mobile devices */
+@media screen and (max-width: 768px) {
+  .music .box {
+    margin-bottom: 15px;
+  }
+  .music img,
+  .music .images {
+    height: 200px;
+  }
+  .music h1 {
+    font-size: 18px;
+  }
+}
+
+/* Responsive styles for small mobile devices */
+@media screen and (max-width: 480px) {
+  .music .box {
+    margin-bottom: 10px;
+  }
+  .music img,
+  .music .images {
+    height: 150px;
+  }
+  .music h1 {
+    font-size: 16px;
+  }
+  .music .text {
+    padding: 0 10px;
+  }
+}

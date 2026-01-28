@@ -1,0 +1,192 @@
+.social .socBox {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.social .socBox i {
+  margin-right: 20px;
+  font-size: 1.5rem;
+}
+.social .socBox span {
+  font-weight: 500;
+}
+.social .socBox:nth-child(1) {
+  background-color: #3b5998;
+}
+.social .socBox:nth-child(2) {
+  background-color: #bd081c;
+}
+.social .socBox:nth-child(3) {
+  background-color: #1da1f2;
+}
+.social .socBox:nth-child(4) {
+  background-color: #c32aa3;
+}
+.social .socBox:nth-child(5) {
+  background-color: #ff0000;
+}
+/*------subscribe--------*/
+.subscribe {
+  border: 1px solid black;
+  padding: 20px;
+  text-align: center;
+}
+.subscribe h1 {
+  text-align: left;
+  font-size: 18px;
+}
+.subscribe input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
+.subscribe button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #ff0000;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+/*------subscribe--------*/
+.banner {
+  margin: 40px 0;
+  text-align: center;
+}
+.banner img {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.catgorys .category1 {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 16px;
+}
+/*----------gallery----------*/
+.gallery .img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+.gallery img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  text-align: center;
+  z-index: 1000;
+}
+
+.popup p {
+  font-size: 16px;
+  color: #333;
+}
+
+.popup::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
+
+/*----------gallery----------*/
+
+/*------ Responsive Styles ------*/
+@media screen and (max-width: 768px) {
+  .social .socBox {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+  .subscribe h1 {
+    text-align: center;
+    font-size: 16px;
+  }
+  .subscribe input,
+  .subscribe button {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .gallery img,
+  .gallery .img {
+    height: auto;
+  }
+}
+@media screen and (max-width: 480px) {
+  .social .socBox i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  .subscribe input,
+  .subscribe button {
+    font-size: 12px;
+    padding: 6px;
+  }
+  .catgorys .category1 {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+/* Override slick slider arrow styles */
+.slick-prev, 
+.slick-next {
+  font-size: 0; /* Hide default text */
+  color: #000 !important;
+  background: #000 !important;
+  width: 40px;
+  height: 40px;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* Optional: Make the arrows circular */
+  opacity: 0.8; /* Optional: Slight transparency */
+  z-index: 2;
+}
+
+/* Customize hover effect for arrows */
+.slick-prev:hover, 
+.slick-next:hover {
+  opacity: 1; /* Fully opaque on hover */
+  background: #333; /* Slightly darker background on hover */
+}
+
+/* Specific styles for arrow icons */
+.slick-prev::before, 
+.slick-next::before {
+  font-size: 20px;
+  color: #fff; /* White icon inside the black arrow */
+}
+
+/* Position adjustments */
+.slick-prev {
+  left: -50px; /* Adjust position of the left arrow */
+}
+
+.slick-next {
+  right: -50px; /* Adjust position of the right arrow */
+}
+

@@ -1,0 +1,21 @@
+body, html {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+  
+  .navbar {
+    width: 100%; /* Make sure the navbar does not overflow */
+  }
+  
+  .navbar-collapse {
+    width: 100%; /* Ensures the collapse menu takes full width */
+  }
+  
+  .navbar-toggler {
+    border: none; /* Removes default border from the toggle button */
+  }
+  
+  .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  

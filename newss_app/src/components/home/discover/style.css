@@ -1,0 +1,74 @@
+.discover .content {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 30px;
+}
+
+.discover .box {
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 4%), 0 0 2px rgb(0 0 0 / 6%), 0 0 1px rgb(0 0 0 / 4%);
+  text-align: center;
+}
+
+.discover .img {
+  width: 150px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.discover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.discover h1 {
+  padding: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .discover .content {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+  }
+
+  .discover .img {
+    width: 120px;
+    height: 80px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .discover .content {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 15px;
+  }
+
+  .discover .img {
+    width: 100px;
+    height: 70px;
+  }
+
+  .discover h1 {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .discover .content {
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+  }
+
+  .discover .img {
+    width: 90px;
+    height: 60px;
+  }
+
+  .discover h1 {
+    font-size: 0.8rem;
+  }
+}

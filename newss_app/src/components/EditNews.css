@@ -1,0 +1,85 @@
+/* EditNews.css */
+
+.edit-news-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-news-container h2 {
+    text-align: center;
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.edit-news-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-news-container input[type="text"],
+.edit-news-container textarea {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.edit-news-container input[type="text"]:focus,
+.edit-news-container textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.edit-news-container textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.edit-news-container input[type="file"] {
+    font-size: 0.9rem;
+    padding: 5px;
+}
+
+.edit-news-container .btn-submit {
+    padding: 12px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.edit-news-container .btn-submit:hover {
+    background-color: #0056b3;
+}
+
+.edit-news-container .message {
+    text-align: center;
+    padding: 12px;
+    font-size: 1rem;
+    color: #333;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.edit-news-container .message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.edit-news-container .message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}

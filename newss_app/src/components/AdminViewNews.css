@@ -1,0 +1,187 @@
+/* General styles for the view */
+.admin-view-news {
+    padding: 20px;
+    background-color: #f8f9fa; /* Light gray background */
+    font-family: 'Arial', sans-serif;
+}
+
+.text-center {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em; /* Large heading */
+    color: #343a40; /* Dark gray color */
+    font-weight: bold;
+}
+
+/* Grid container for news cards */
+.news-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+
+/* Individual news card styling */
+.admin-view-news .news-cardd {
+    background-color: #ffffff; /* White card background */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    height: 100%; /* Full height to allow content and buttons to be spaced correctly */
+}
+
+/* News card hover effect */
+.admin-view-news .news-cardd:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* News card image */
+.news-image {
+    padding: 20px;
+    width: 100%;
+    height: 200px; /* Fixed height */
+    object-fit: cover; /* Ensure full coverage */
+}
+
+/* Title and content styling */
+.news-title {
+    font-size: 1.5em;
+    margin: 15px 10px 5px;
+    color: #333;
+    font-weight: bold;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.news-category, .news-description, .news-content {
+    margin: 0 10px 15px;
+    color: #555;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+/* Limit description to 2 lines */
+.news-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Limit content to 3 lines */
+.news-content {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Flex grow for content to push buttons to the bottom */
+.news-cardd .news-title,
+.news-cardd .news-description,
+.news-cardd .news-content {
+    flex-grow: 1; /* Allow content area to grow and push buttons down */
+}
+
+/* Additional details (author, time, place) */
+.news-author, .news-time, .news-place {
+    margin: 0 10px 10px;
+    color: #777; /* Subtle gray */
+    font-size: 0.95em;
+    font-style: italic;
+}
+
+.news-author strong,
+.news-time strong,
+.news-place strong {
+    color: #333; /* Highlight labels */
+    font-weight: bold;
+}
+
+/* Actions section (buttons) */
+.news-card-actions {
+    display: flex;
+    justify-content: space-between; /* Space between buttons */
+    padding: 10px;
+    background-color: #f1f3f5; /* Light background */
+    border-top: 1px solid #ddd; /* Adds separation */
+}
+
+/* Button styles */
+.news-card-actions .btn {
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.news-card-actions .btn-primary {
+    background-color: gray;
+    color: #fff;
+}
+
+.news-card-actions .btn-primary:hover {
+    background-color: black;
+    transform: scale(1.05);
+}
+
+.news-card-actions .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.news-card-actions .btn-danger:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+/* Alerts for error and success messages */
+.alert {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 4px;
+    color: #fff;
+    text-align: center;
+}
+
+.alert.alert-danger {
+    background-color: #dc3545;
+}
+
+.popup-success {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #d4edda;
+    color: #155724;
+    padding: 20px 30px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1000;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-success::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}

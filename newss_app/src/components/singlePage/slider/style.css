@@ -1,0 +1,132 @@
+/* General Styles */
+.singlePopular {
+  overflow: hidden;
+  padding: 20px;
+  background-color: #f9f9f9; /* Optional background */
+}
+
+.singlePopular .content {
+  position: relative;
+}
+
+/* Slider Item Styles */
+.singlePopular .box {
+  max-width: 250px; /* Define max width for larger screens */
+  width: 100%; /* Responsive width */
+  height: 100px;
+  position: relative;
+  cursor: pointer;
+  margin: 0 auto; /* Center items */
+  padding: 10px; /* Add spacing between items */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.singlePopular img {
+  display: block;
+  width: 100%; /* Make images fully responsive */
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+/* Text Overlay Styles */
+.singlePopular .text {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6); /* Add contrast for text readability */
+  border-radius: 3px;
+  max-width: calc(100% - 20px); /* Ensure text doesn't overflow */
+}
+
+.singlePopular .text h1 {
+  font-size: 13px;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Arrow Styling */
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: black;
+  color: white;
+  font-size: 20px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.3s ease;
+}
+
+.custom-prev {
+  left: -40px; /* Adjust distance from slider */
+}
+
+.custom-next {
+  right: -40px; /* Adjust distance from slider */
+}
+
+.custom-arrow:hover {
+  background: #333;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .singlePopular .box {
+    max-width: 200px;
+    height: 120px;
+  }
+
+  .custom-prev {
+    left: -30px;
+  }
+
+  .custom-next {
+    right: -30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .singlePopular .box {
+    max-width: 150px;
+    height: 100px;
+  }
+
+  .custom-prev,
+  .custom-next {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .singlePopular .box {
+    max-width: 120px;
+    height: 80px;
+  }
+
+  .singlePopular .text h1 {
+    font-size: 11px;
+  }
+
+  .custom-prev,
+  .custom-next {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    left: -20px;
+    right: -20px;
+  }
+}
