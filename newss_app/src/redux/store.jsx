@@ -3,7 +3,7 @@ import { thunk } from "redux-thunk";
 import NewsReducer from "./reducers/NewsReducer";
 
 const rootReducer = combineReducers({
-  newsDataa: NewsReducer
+  newsData: NewsReducer
 });
 
 const composeEnhancers =

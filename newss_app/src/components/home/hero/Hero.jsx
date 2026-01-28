@@ -1,44 +1,39 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import "./hero.css";
+import { fetchNews } from "../../../redux/actions/NewsActions";
 
 const Hero = () => {
-  const [news, setNews] = useState([]);
 
-  const fetchNews = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/news/");
-      if (response.data && Array.isArray(response.data.news)) {
-        setNews(response.data.news.slice(0, 4));
-      } else {
-        console.error("News data is not in the expected format.");
-      }
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    }
-  };
-  useEffect(() => {
-    fetchNews();
-  }, []);
+    const { news, loading, error } = useSelector(( state ) => state.newsData );
+    const dispatch = useDispatch();
+
+    useEffect( () => {
+      dispatch( fetchNews() );
+    }, [ dispatch ]);
+
+  if( loading ) {
+    return <p>Loading...</p>
+  }
+
+  if( error ) {
+    return <p>{ error }</p>
+  }
 
   return (
     <section className="hero">
       <div className="container">
-        {/* Display news items directly */}
         {news.length === 0 ? (
-          <p>Loading news...</p> // Show loading text if news is empty
+          <p>Loading news...</p>
         ) : (
-          news.map((item) => {
-            // Check if user_id is available in session storage
+          news.slice(0, 4).map((item) => {
             const userId = sessionStorage.getItem("user_id");
-
-            // Conditionally set the redirect path based on user_id
             const redirectPath = userId ? `/news-detail/${item.id}` : "/login";
 
             return (
               <div className="box" style={{ position: "relative" }} key={item.id}>
-                {/* Use Link for navigation */}
                 <Link
                   to={redirectPath}
                   style={{
@@ -52,13 +47,12 @@ const Hero = () => {
                   }}
                 />
                 <div className="img">
-                  {/* Image with fallback */}
                   <img
-                    src={item.image_url || "/default-image.jpg"} // Use default image if API image is not available
+                    src={item.image_url || "/default-image.jpg"}
                     alt={item.title}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "/default-image.jpg"; // Fallback image on error
+                      e.target.src = "/default-image.jpg";
                     }}
                   />
                 </div>
