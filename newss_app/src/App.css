@@ -1,21 +1,24 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap");
 
 :root {
-  --primary-color: #1a73e8;
-  --secondary-color: #202124;
-  --accent-color: #ea4335;
-  --success-color: #34a853;
-  --warning-color: #fbbc04;
-  --text-primary: #202124;
-  --text-secondary: #5f6368;
-  --text-light: #80868b;
-  --bg-light: #f8f9fa;
+  --primary-color: #0f62fe;
+  --primary-hover: #0353e9;
+  --secondary-color: #161616;
+  --accent-color: #f1c21b;
+  --success-color: #24a148;
+  --warning-color: #f1c21b;
+  --danger-color: #da1e28;
+  --text-primary: #161616;
+  --text-secondary: #525252;
+  --text-light: #8d8d8d;
+  --bg-light: #f4f4f4;
   --bg-white: #ffffff;
-  --border-color: #e8eaed;
-  --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, 0.1), 0 1px 3px 1px rgba(60, 64, 67, 0.08);
-  --shadow-md: 0 1px 3px 0 rgba(60, 64, 67, 0.15), 0 4px 8px 3px rgba(60, 64, 67, 0.1);
-  --shadow-lg: 0 4px 12px 0 rgba(60, 64, 67, 0.2), 0 8px 16px 6px rgba(60, 64, 67, 0.12);
-  --shadow-xl: 0 8px 24px 0 rgba(60, 64, 67, 0.25), 0 12px 32px 8px rgba(60, 64, 67, 0.15);
+  --bg-surface: #f9f9f9;
+  --border-color: #e0e0e0;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.18);
   --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -23,6 +26,10 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -40,6 +47,19 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.2rem;
+}
+
+h3 {
+  font-size: 1.8rem;
 }
 
 p,
@@ -50,19 +70,19 @@ h4,
 h5,
 h6,
 span,
-label,
-i {
-  cursor: pointer;
+label {
+  cursor: default;
 }
 
 a {
   text-decoration: none;
-  color: inherit;
+  color: var(--primary-color);
   transition: var(--transition-base);
+  font-weight: 500;
 }
 
 a:hover {
-  color: var(--primary-color);
+  color: var(--primary-hover);
 }
 
 /*-----------global-----------*/

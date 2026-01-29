@@ -2,70 +2,75 @@
 
 .error-message,
 .error-text {
-    color: #d32f2f;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
+    color: #da1e28;
+    font-size: 13px;
+    margin-top: 6px;
     display: block;
-}
-
-.error-text {
     font-weight: 500;
 }
 
+.error-text {
+    font-weight: 600;
+}
+
 .input-error {
-    border-color: #d32f2f !important;
-    background-color: #ffebee !important;
+    border-color: #da1e28 !important;
+    background-color: #fee5e5 !important;
 }
 
 .input-error:focus {
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1) !important;
+    box-shadow: inset 0 0 0 3px rgba(218, 30, 40, 0.1) !important;
 }
 
 /* Alert Boxes */
 .alert {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
     border-left: 4px solid;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
 }
 
 .alert-error,
 .alert.error,
 .error-message {
-    background-color: #ffebee;
-    color: #c62828;
-    border-left-color: #d32f2f;
+    background-color: #fee5e5;
+    color: #da1e28;
+    border-left-color: #da1e28;
 }
 
 .alert-success,
 .alert.success,
 .success-message {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border-left-color: #4caf50;
+    background-color: #d0e2e4;
+    color: #24a148;
+    border-left-color: #24a148;
 }
 
 .alert-warning {
-    background-color: #fff3e0;
-    color: #e65100;
-    border-left-color: #ff9800;
+    background-color: #f1e4d0;
+    color: #b8860b;
+    border-left-color: #f1c21b;
 }
 
 .alert-info {
-    background-color: #e3f2fd;
-    color: #1565c0;
-    border-left-color: #2196f3;
+    background-color: #e0f4ff;
+    color: #0043ce;
+    border-left-color: #0f62fe;
 }
 
 /* Loading Spinner */
 .spinner {
     display: inline-block;
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(15, 98, 254, 0.15);
+    border-top: 4px solid #0f62fe;
+    border-right: 4px solid #0353e9;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    box-shadow: 0 0 15px rgba(15, 98, 254, 0.1);
 }
 
 @keyframes spin {
@@ -78,45 +83,58 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 32px;
     min-height: 200px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
 }
 
 .loading-container p {
-    margin-top: 1rem;
-    font-size: 1rem;
-    color: #666;
+    margin-top: 20px;
+    font-size: 15px;
+    color: #525252;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
 }
 
 /* Error Container */
 .error-container {
-    background-color: #ffebee;
-    border: 1px solid #ef5350;
-    border-radius: 4px;
-    padding: 2rem;
-    margin: 2rem 0;
+    background-color: #fee5e5;
+    border: 1.5px solid #da1e28;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 24px 0;
     text-align: center;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    box-shadow: var(--shadow-sm);
 }
 
 .error-container h3 {
-    color: #c62828;
-    margin-bottom: 1rem;
+    color: #da1e28;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
 }
 
 .error-container p {
-    color: #d32f2f;
-    margin-bottom: 1rem;
+    color: #da1e28;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 /* No News Message */
 .no-news {
     text-align: center;
-    padding: 2rem;
-    color: #666;
+    padding: 48px 20px;
+    color: #525252;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .no-news p {
-    font-size: 1rem;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 /* Form Disabled State */
@@ -129,7 +147,8 @@ button:disabled {
 }
 
 button:disabled {
-    background-color: #ccc;
+    background-color: #e0e0e0;
+    color: #8d8d8d;
 }
 
 /* Button Loading State */
@@ -138,50 +157,58 @@ button:disabled {
 .btn-submit:disabled,
 .login-button:disabled,
 .register-button:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
-    background-color: #95a3a3;
+    background-color: #d0d0d0;
+    color: #8d8d8d;
 }
 
 /* Form Group Styling */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 28px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #161616;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .form-group label .required {
-    color: #d32f2f;
+    color: #da1e28;
 }
 
 /* Password Requirements Helper Text */
 .password-requirements {
-    font-size: 0.875rem;
-    color: #666;
-    margin-top: 0.5rem;
+    font-size: 13px;
+    color: #525252;
+    margin-top: 8px;
+    font-family: 'Inter', sans-serif;
 }
 
 .password-requirements li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 6px;
+    margin-left: 20px;
 }
 
 .password-requirements li.valid {
-    color: #4caf50;
+    color: #24a148;
+    font-weight: 500;
 }
 
 .password-requirements li.invalid {
-    color: #d32f2f;
+    color: #da1e28;
+    font-weight: 500;
 }
 
 /* Accessibility */
 [role="alert"] {
     position: relative;
-    padding-left: 1.5rem;
+    padding-left: 20px;
 }
 
 [role="alert"]::before {
@@ -197,26 +224,47 @@ button:disabled {
 
 .alert-error[role="alert"]::before,
 .error-message[role="alert"]::before {
-    background-color: #d32f2f;
+    background-color: #da1e28;
 }
 
 .alert-success[role="alert"]::before,
 .success-message[role="alert"]::before {
-    background-color: #4caf50;
+    background-color: #24a148;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .alert {
-        padding: 0.75rem;
-        font-size: 0.875rem;
+        padding: 12px 16px;
+        font-size: 13px;
     }
     
     .error-container {
-        padding: 1rem;
+        padding: 20px 16px;
     }
     
     .loading-container {
         min-height: 150px;
+        padding: 24px;
+    }
+
+    .error-container h3 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .alert {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+
+    .error-container {
+        padding: 16px 12px;
+        margin: 16px 0;
+    }
+
+    .no-news {
+        padding: 32px 16px;
     }
 }
